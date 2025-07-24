@@ -1,51 +1,52 @@
-import {TagSvg} from './TagSvg';
-import {KeySvg} from './KeySvg';
-import {CopySvg} from './CopySvg';
-import {GiftSvg} from './GiftSvg';
-import {HashSvg} from './HashSvg';
-import {PlusSvg} from './PlusSvg';
-import {UserSvg} from './UserSvg';
-import {OpenSvg} from './OpenSvg';
-import {CloseSvg} from './CloseSvg';
-import {PhoneSvg} from './PhoneSvg';
-import {HeartSvg} from './HeartSvg';
-import {CheckSvg} from './CheckSvg';
-import {EmailSvg} from './EmailSvg';
-import {CrossSvg} from './CrossSvg';
-import {FilterSvg} from './FilterSvg';
-import {IsOpenSvg} from './IsOpenSvg';
-import {MapPinSvg} from './MapPinSvg';
-import {CameraSvg} from './CameraSvg';
-import {GoogleSvg} from './GoogleSvg';
-import {DollarSvg} from './DollarSvg';
-import {SearchSvg} from './SearchSvg';
-import {GoBackSvg} from './GoBackSvg';
-import {EyeOffSvg} from './EyeOffSvg';
-import {ViewAllSvg} from './ViewAllSvg';
-import {IsCloseSvg} from './IsCloseSvg';
-import {CalendarSvg} from './CalendarSvg';
-import {HeartBigSvg} from './HeartBigSvg';
-import {FIleTextSvg} from './FIleTextSvg';
-import {CardMenuSvg} from './CardMenuSvg';
-import {PasswordSvg} from './PasswordSvg';
-import {FacebookSvg} from './FacebookSvg';
-import {BriefcaseSvg} from './BriefcaseSvg';
-import {ArrowDownSvg} from './ArrowDownSvg';
-import {PiggyBankSvg} from './PiggyBankSvg';
-import {InsuranceSvg} from './InsuranceSvg';
-import {RightArrowSvg} from './RightArrowSvg';
-import {InputCheckSvg} from './InputCheckSvg';
-import {TransactionSvg} from './TransactionSvg';
-import {StatusCheckSvg} from './StatusCheckSvg';
-import {HeaderBasketSvg} from './HeaderBasketSvg';
-import {ApplyPromocodeSvg} from './ApplyPromocodeSvg';
-import {NotificationCheckSvg} from './NotificationCheckSvg';
+import { TagSvg } from "./TagSvg";
+import { KeySvg } from "./KeySvg";
+import { CopySvg } from "./CopySvg";
+import { GiftSvg } from "./GiftSvg";
+import { HashSvg } from "./HashSvg";
+import { PlusSvg } from "./PlusSvg";
+import { UserSvg } from "./UserSvg";
+import { OpenSvg } from "./OpenSvg";
+import { CloseSvg } from "./CloseSvg";
+import { PhoneSvg } from "./PhoneSvg";
+import { HeartSvg } from "./HeartSvg";
+import { CheckSvg } from "./CheckSvg";
+import { EmailSvg } from "./EmailSvg";
+import { CrossSvg } from "./CrossSvg";
+import { FilterSvg } from "./FilterSvg";
+import { IsOpenSvg } from "./IsOpenSvg";
+import { MapPinSvg } from "./MapPinSvg";
+import { CameraSvg } from "./CameraSvg";
+import { GoogleSvg } from "./GoogleSvg";
+import { DollarSvg } from "./DollarSvg";
+import { SearchSvg } from "./SearchSvg";
+import { GoBackSvg } from "./GoBackSvg";
+import { EyeOffSvg } from "./EyeOffSvg";
+import { EyeOnSvg } from "./EyeOnSvg";
+import { ViewAllSvg } from "./ViewAllSvg";
+import { IsCloseSvg } from "./IsCloseSvg";
+import { CalendarSvg } from "./CalendarSvg";
+import { HeartBigSvg } from "./HeartBigSvg";
+import { FIleTextSvg } from "./FIleTextSvg";
+import { CardMenuSvg } from "./CardMenuSvg";
+import { PasswordSvg } from "./PasswordSvg";
+import { FacebookSvg } from "./FacebookSvg";
+import { BriefcaseSvg } from "./BriefcaseSvg";
+import { ArrowDownSvg } from "./ArrowDownSvg";
+import { PiggyBankSvg } from "./PiggyBankSvg";
+import { InsuranceSvg } from "./InsuranceSvg";
+import { RightArrowSvg } from "./RightArrowSvg";
+import { InputCheckSvg } from "./InputCheckSvg";
+import { TransactionSvg } from "./TransactionSvg";
+import { StatusCheckSvg } from "./StatusCheckSvg";
+import { HeaderBasketSvg } from "./HeaderBasketSvg";
+import { ApplyPromocodeSvg } from "./ApplyPromocodeSvg";
+import { NotificationCheckSvg } from "./NotificationCheckSvg";
 
-import {HomeTabSvg} from './tabs/HomeTabSvg';
-import {BellTabSvg} from './tabs/BellTabSvg';
-import {OrderTabSvg} from './tabs/OrderTabSvg';
-import {HeartTabSvg} from './tabs/HeartTabSvg';
-import {SearchTabSvg} from './tabs/SearchTabSvg';
+import { HomeTabSvg } from "./tabs/HomeTabSvg";
+import { BellTabSvg } from "./tabs/BellTabSvg";
+import { OrderTabSvg } from "./tabs/OrderTabSvg";
+import { HeartTabSvg } from "./tabs/HeartTabSvg";
+import { SearchTabSvg } from "./tabs/SearchTabSvg";
 
 export const svg = {
   KeySvg,
@@ -68,6 +69,7 @@ export const svg = {
   DollarSvg,
   GoBackSvg,
   EyeOffSvg,
+  EyeOnSvg,
   GoogleSvg,
   MapPinSvg,
   CameraSvg,

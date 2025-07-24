@@ -1,16 +1,17 @@
-import {DM_Sans} from 'next/font/google';
-import type {Metadata, Viewport} from 'next';
+import { DM_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Toaster } from "react-hot-toast";
 
-import 'swiper/css';
-import '../scss/_index.scss';
+import "swiper/css";
+import "../scss/_index.scss";
 
 const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
-  subsets: ['latin'],
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
 });
 
-export const viewport: Viewport = {themeColor: '#F6F9F9'};
-export const metadata: Metadata = {manifest: '/manifest.json'};
+export const viewport: Viewport = { themeColor: "#F6F9F9" };
+export const metadata: Metadata = { manifest: "/manifest.json" };
 
 export default function RootLayout({
   children,
@@ -18,18 +19,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
         <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0'
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0"
         />
       </head>
       <body
-        id='app'
+        id="app"
         className={`${dmSans.variable}`}
-        style={{backgroundColor: '#F6F9F9'}}
+        style={{ backgroundColor: "#F6F9F9" }}
       >
+        <Toaster position="top-center" reverseOrder={false} />
         {children}
       </body>
     </html>

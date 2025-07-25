@@ -53,11 +53,10 @@ export const SignUp: React.FC = () => {
         throw new Error(data.message || "Signup failed");
       }
 
-      toast.success("Signup successful! Please verify your phone number.");
-      // redirect
+      toast.success(data.message || "Signup successful!");
+      localStorage.setItem("pending_user_id", data.userId);
       router.replace(Routes.CONFIRMATION_CODE);
     } catch (err: any) {
-      // alert(err.message);
       toast.error(err.message || "An error occurred during signup.");
     }
   };
@@ -127,7 +126,7 @@ export const SignUp: React.FC = () => {
               placeholder="Enter your email"
               containerStyle={{ marginBottom: "10px" }}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
             />
             {email && !Emailregex.test(email) && (
               <p

@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import connectDB from "@/config/db";
 import User from "@/models/user";
 import { generateOTP } from "@/libs/generateOTP";
+import { sendSms } from "@/config/textlk/sendSms";
+import { REGISTER_OTP_TEMPLATE } from "@/config/textlk/templates";
 
 //  POST /api/auth/signup
 export const POST = async (req: NextRequest, res: NextResponse) => {
@@ -108,7 +110,9 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         }
       );
 
-      console.log("Generated OTP (update):", otp); // Send via SMS in production
+      // Send Sms using text.lk
+      const message = REGISTER_OTP_TEMPLATE(otp);
+      await sendSms(reusableUser.mobile, message);
 
       return NextResponse.json(
         {
@@ -131,7 +135,9 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       otpExpires: dayjs().add(10, "minute").toDate(),
     });
 
-    console.log("Generated OTP (create):", otp); // Send via SMS in production
+    // Send Sms using text.lk
+    const message = REGISTER_OTP_TEMPLATE(otp);
+    await sendSms(newUser.mobile, message);
 
     return NextResponse.json(
       {

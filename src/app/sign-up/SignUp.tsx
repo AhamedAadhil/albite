@@ -14,7 +14,7 @@ export const SignUp: React.FC = () => {
   const router = useRouter();
 
   const [username, setUsername] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [mobile, setMobile] = useState("+94");
   const [isMobileValid, setIsMobileValid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -113,7 +113,7 @@ export const SignUp: React.FC = () => {
               }}
               isValid={isMobileValid}
             />
-            {mobile && !isMobileValid && (
+            {mobile && mobile.length > 3 && !isMobileValid && (
               <p
                 style={{ color: "red", fontSize: "12px", marginBottom: "10px" }}
               >

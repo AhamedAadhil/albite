@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import connectDB from "@/config/db";
 import User from "@/models/user";
 import { generateOTP } from "@/libs/generateOTP";
+import { sendSms } from "@/config/textlk/sendSms";
+import { REGISTER_OTP_TEMPLATE } from "@/config/textlk/templates";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
@@ -64,7 +66,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     user.otpExpires = dayjs().add(10, "minute").toDate(); // 10 minutes
     await user.save();
 
-    // TODO:Send OTP again
+    // Send OTP again
+    await sendSms(user.mobile, REGISTER_OTP_TEMPLATE(otp));
 
     return NextResponse.json(
       { message: "OTP re-sent successfully", success: true },

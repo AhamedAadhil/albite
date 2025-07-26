@@ -3,14 +3,47 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 import { svg } from "../../svg";
 import { Routes } from "../../routes";
 import { components } from "../../components";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
+  const [mobile, setMobile] = useState("+94");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
+  const { login } = useAuthStore();
+
+  // Validate form fields
+  const isFormValid = mobile.trim().length > 3 && password.trim().length >= 6;
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Sign in failed");
+      }
+
+      // Persist user in Zustand store
+      login(data.user);
+
+      toast.success(data.message || "Signed in successfully!");
+      router.replace(Routes.TAB_NAVIGATOR);
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong.");
+    }
+  };
 
   const renderHeader = () => {
     return <components.Header showGoBack={true} />;
@@ -38,14 +71,24 @@ export const SignIn: React.FC = () => {
           {/* INPUT FIELDS */}
           <section>
             <components.InputField
-              inputType="email"
-              placeholder="Enter your email"
+              inputType="phone"
+              placeholder="+94XXXXXXXXX"
               containerStyle={{ marginBottom: "10px" }}
+              value={mobile}
+              onChange={(e) => {
+                let val = e.target.value;
+                if (!val.startsWith("+94")) {
+                  val = "+94" + val.replace(/^0+/, "");
+                }
+                setMobile(val);
+              }}
             />
             <components.InputField
               inputType="password"
               placeholder="Enter your password"
               containerStyle={{ marginBottom: "14px" }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </section>
 
@@ -94,7 +137,11 @@ export const SignIn: React.FC = () => {
 
           {/* SIGN IN BUTTON */}
           <section style={{ marginBottom: 14 }}>
-            <components.Button label="Sign In" href={Routes.TAB_NAVIGATOR} />
+            <components.Button
+              label="Sign In"
+              onClick={handleSubmit}
+              disabled={!isFormValid}
+            />
           </section>
 
           {/* REGISTER */}

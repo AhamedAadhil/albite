@@ -22,6 +22,8 @@ export interface IUser extends Document {
   favourites: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
 
+  isActive?: boolean;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -117,6 +119,11 @@ const userSchema = new Schema<IUser>(
         ref: "Review",
       },
     ],
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

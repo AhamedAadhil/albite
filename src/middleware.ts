@@ -40,7 +40,7 @@ export async function middleware(req: NextRequest) {
 
     // ✅ Role-based access
     if (pathname.startsWith("/admin") && payload.role !== 7) {
-      return NextResponse.redirect(new URL("/403", req.url));
+      return NextResponse.redirect(new URL("/sign-in", req.url));
     }
 
     return NextResponse.next();
@@ -55,3 +55,9 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/((?!_next|api|favicon.ico|manifest.json|logo).*)"],
 };
+
+// export const config = {
+//   matcher: [
+//     "/((?!_next/static|_next/image|favicon.ico|manifest.json|logo192.png|logo512.png|sign-in|sign-up|forgot-password|new-password|forgot-password-sent-email|confirmation-code|sign-up-account-created|api/public).*)",
+//   ],
+// };

@@ -59,7 +59,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     // 5. Generate JWT (optional)
     const token = jwt.sign(
       {
-        userId: user._id,
+        _id: user._id,
         email: user.email,
         mobile: user.mobile,
         name: user.name,

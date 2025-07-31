@@ -63,7 +63,7 @@ export const SignIn: React.FC = () => {
           }}
           className="container"
         >
-          <h1 style={{ marginBottom: 30 }}>Welcome Back!</h1>
+          <h1 style={{ marginBottom: 30 }}>Welcome back to Albite.lk!</h1>
           <span className="t16" style={{ marginBottom: 30 }}>
             Sign in to continue
           </span>

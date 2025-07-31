@@ -8,10 +8,15 @@ type Props = {
   value?: string;
   inputType: string;
   placeholder: string;
+  options?: string[];
   autoCapitalize?: string;
   containerStyle?: React.CSSProperties;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
+
   isValid?: boolean;
+  disabled?: boolean;
 };
 
 export const InputField: React.FC<Props> = ({
@@ -21,7 +26,9 @@ export const InputField: React.FC<Props> = ({
   containerStyle,
   onChange,
   value,
+  disabled,
   isValid,
+  options,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -67,24 +74,53 @@ export const InputField: React.FC<Props> = ({
       {inputType === "search" && <svg.SearchSvg />}
 
       {/* Input */}
-      <input
-        placeholder={placeholder}
-        maxLength={50}
-        type={resolvedType}
-        style={{
-          width: "100%",
-          height: "100%",
-          padding: 0,
-          margin: 0,
-          border: "none",
-          outline: "none",
-          backgroundColor: "transparent",
-          fontSize: 16,
-          color: "var(--main-dark)",
-        }}
-        value={value}
-        onChange={onChange}
-      />
+      {options ? (
+        <select
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          style={{
+            width: "100%",
+            height: "100%",
+            padding: 0,
+            margin: 0,
+            border: "none",
+            outline: "none",
+            backgroundColor: "transparent",
+            fontSize: 16,
+            color: "var(--main-dark)",
+            opacity: disabled ? 0.6 : 1,
+          }}
+        >
+          <option value="">Select your region</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          placeholder={placeholder}
+          maxLength={50}
+          type={resolvedType}
+          disabled={disabled}
+          style={{
+            width: "100%",
+            height: "100%",
+            padding: 0,
+            margin: 0,
+            border: "none",
+            outline: "none",
+            backgroundColor: "transparent",
+            fontSize: 16,
+            color: "var(--main-dark)",
+            opacity: disabled ? 0.6 : 1,
+          }}
+          value={value}
+          onChange={onChange}
+        />
+      )}
 
       {/* Right Side Icon */}
       {/* Right Side Icon */}

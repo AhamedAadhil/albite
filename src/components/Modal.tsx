@@ -1,15 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { svg } from "../svg";
-import { URLS } from "../config";
 import { Routes } from "../routes";
 import { stores } from "../stores";
 import { Switcher } from "./Switcher";
 import { handleSignOut } from "@/libs/handleSignout";
+
+import { useAuthStore } from "@/stores/useAuthStore";
+import getInitials from "@/libs/getInitials";
 
 const modalMenu = [
   {
@@ -76,6 +77,8 @@ const modalMenu = [
 
 export const Modal: React.FC = () => {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const initials = getInitials(user?.name || "User"); // fallback to 'User' if undefined
 
   const { isOpen, closeModal } = stores.useModalStore();
 
@@ -140,14 +143,25 @@ export const Modal: React.FC = () => {
             borderBottom: "1px solid #DBE9F5",
           }}
         >
-          <Image
-            width={60}
-            height={60}
-            alt="user"
-            style={{ borderRadius: 30 }}
-            priority={true}
-            src={`${URLS.MAIN_URL}/assets/users/01.jpg`}
-          />
+          <div
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: "50%",
+              backgroundColor: "#007bff", // or your theme color like 'var(--main-turquoise)'
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+              fontSize: 20,
+              textTransform: "uppercase",
+              flexShrink: 0,
+            }}
+          >
+            {initials}
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
               className="t14"
@@ -157,9 +171,9 @@ export const Modal: React.FC = () => {
                 marginBottom: 4,
               }}
             >
-              Jordan Hebert
+              {user?.name}
             </span>
-            <span className="t14">jordanhebert@mail.com</span>
+            <span className="t14">{user?.mobile}</span>
           </div>
         </div>
         {/* Phone */}

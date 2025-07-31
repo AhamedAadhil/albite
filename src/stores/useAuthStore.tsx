@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type User = {
+export type User = {
   _id: string;
   name: string;
   email: string;
@@ -9,6 +9,7 @@ type User = {
   role: number;
   isVerified: boolean;
   token: string;
+  region?: string;
 };
 
 type AuthState = {

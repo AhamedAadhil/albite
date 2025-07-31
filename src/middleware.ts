@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const PUBLIC_ROUTES = [
-  "/sign-in",
-  "/sign-up",
-  "/forgot-password",
-  "/new-password",
-  "/forgot-password-sent-email",
-  "/confirmation-code",
-  "/sign-up-account-created",
-  "/manifest.json",
-  "/favicon.ico",
-  "/logo192.png",
-  "/logo512.png",
-  "/api/public",
+// Define your protected routes explicitly
+const PROTECTED_ROUTES = [
+  "/edit-profile",
+  "/tab-navigator",
+  "/order-history",
+  "/order-history-empty",
+  "/api/auth/me",
 ];
 
 const getJwtSecret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -21,14 +15,14 @@ const getJwtSecret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ Allow public routes
-  if (PUBLIC_ROUTES.includes(pathname)) {
+  // If route is not protected, allow it
+  if (!PROTECTED_ROUTES.includes(pathname)) {
     return NextResponse.next();
   }
 
   const token = req.cookies.get("token")?.value;
 
-  // ❌ No token — redirect to signin
+  // Redirect to login if token not found
   if (!token) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/sign-in";
@@ -38,7 +32,7 @@ export async function middleware(req: NextRequest) {
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
 
-    // ✅ Role-based access
+    // Optional: Role-based logic if needed later
     if (pathname.startsWith("/admin") && payload.role !== 7) {
       return NextResponse.redirect(new URL("/sign-in", req.url));
     }
@@ -52,12 +46,13 @@ export async function middleware(req: NextRequest) {
   }
 }
 
+// Only run middleware on /edit-profile and /tab-navigator
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico|manifest.json|logo).*)"],
+  matcher: [
+    "/edit-profile",
+    "/tab-navigator",
+    "/order-history",
+    "/order-history-empty",
+    "/api/auth/me",
+  ],
 };
-
-// export const config = {
-//   matcher: [
-//     "/((?!_next/static|_next/image|favicon.ico|manifest.json|logo192.png|logo512.png|sign-in|sign-up|forgot-password|new-password|forgot-password-sent-email|confirmation-code|sign-up-account-created|api/public).*)",
-//   ],
-// };

@@ -1,10 +1,10 @@
-import axios from 'axios';
-import {useState, useEffect} from 'react';
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-import {URLS} from '../config';
-import {MenuType} from '../types';
+import { URLS } from "../config";
+import { MenuType } from "../types";
 
-export const useGetMenu = (): {menuLoading: boolean; menu: MenuType[]} => {
+export const useGetMenu = (): { menuLoading: boolean; menu: MenuType[] } => {
   const [menu, setMenu] = useState<MenuType[]>([]);
   const [menuLoading, setMenuLoading] = useState<boolean>(false);
 
@@ -13,6 +13,7 @@ export const useGetMenu = (): {menuLoading: boolean; menu: MenuType[]} => {
 
     try {
       const response = await axios.get(URLS.GET_MENU);
+      console.log(response.data);
       setMenu(response.data.menu);
     } catch (error) {
       console.error(error);
@@ -25,5 +26,5 @@ export const useGetMenu = (): {menuLoading: boolean; menu: MenuType[]} => {
     getMenu();
   }, []);
 
-  return {menuLoading, menu};
+  return { menuLoading, menu };
 };

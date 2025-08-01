@@ -9,20 +9,24 @@ import { svg } from "../../svg";
 import { Routes } from "../../routes";
 import { components } from "../../components";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { fetchUserProfile } from "@/libs/getUserProfile";
 
 export const SignIn: React.FC = () => {
   const router = useRouter();
   const [mobile, setMobile] = useState("+94");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { login } = useAuthStore();
+  const { updateUser } = useAuthStore();
 
   // Validate form fields
   const isFormValid = mobile.trim().length > 3 && password.trim().length >= 6;
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,15 +36,24 @@ export const SignIn: React.FC = () => {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         throw new Error(data.message || "Sign in failed");
       }
 
+      setLoading(false);
       // Persist user in Zustand store
       login(data.user);
+
+      // Fetch full profile and update Zustand
+      const fullProfile = await fetchUserProfile();
+      if (fullProfile) {
+        updateUser(fullProfile); // this will merge fields like region, etc.
+      }
 
       toast.success(data.message || "Signed in successfully!");
       router.replace(Routes.TAB_NAVIGATOR);
     } catch (error: any) {
+      setLoading(false);
       toast.error(error.message || "Something went wrong.");
     }
   };
@@ -138,7 +151,7 @@ export const SignIn: React.FC = () => {
           {/* SIGN IN BUTTON */}
           <section style={{ marginBottom: 14 }}>
             <components.Button
-              label="Sign In"
+              label={loading ? "Signing In..." : "Sign In"}
               onClick={handleSubmit}
               disabled={!isFormValid}
             />

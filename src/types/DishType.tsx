@@ -1,4 +1,6 @@
 export type DishType = {
+  servings: number;
+  _id: string | null | undefined;
   id: number;
   name: string;
   kcal: string;

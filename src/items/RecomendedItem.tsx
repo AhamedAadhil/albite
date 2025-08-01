@@ -1,21 +1,21 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
-import {dish} from '../dish';
+import { dish } from "../dish";
 
-import {svg} from '../svg';
-import {stores} from '../stores';
-import {Routes} from '../routes';
+import { svg } from "../svg";
+import { stores } from "../stores";
+import { Routes } from "../routes";
 
-import type {DishType} from '../types';
+import type { DishType } from "../types";
 
 type Props = {
   item: DishType;
 };
 
-export const RecommendedItem: React.FC<Props> = ({item}) => {
-  const {addToCart} = stores.useCartStore();
+export const RecommendedItem: React.FC<Props> = ({ item }) => {
+  const { addToCart } = stores.useCartStore();
   const {
     list: wishlist,
     addToWishlist,
@@ -28,26 +28,26 @@ export const RecommendedItem: React.FC<Props> = ({item}) => {
 
   return (
     <Link
-      className='column clickable'
-      href={`${Routes.MENU_ITEM}/${item.id}`}
+      className="column clickable"
+      href={`${Routes.MENU_ITEM}/${item._id}`}
       style={{
-        backgroundColor: 'var(--white-color)',
-        borderRadius: '10px',
-        position: 'relative',
+        backgroundColor: "var(--white-color)",
+        borderRadius: "10px",
+        position: "relative",
       }}
     >
       <Image
         src={item.image}
-        alt='Dish'
+        alt="Dish"
         width={0}
         height={0}
-        sizes='100vw'
+        sizes="100vw"
         priority={true}
-        style={{width: '100%', height: 'auto', borderRadius: '10px'}}
+        style={{ width: "100%", height: "auto", borderRadius: "10px" }}
       />
       <button
         style={{
-          position: 'absolute',
+          position: "absolute",
           right: 0,
           bottom: 72 - 15,
           padding: 15,
@@ -70,26 +70,20 @@ export const RecommendedItem: React.FC<Props> = ({item}) => {
       >
         <svg.HeartSvg dish={item} />
       </button>
-      <div
-        className='column'
-        style={{padding: '14px'}}
-      >
-        <dish.DishName
-          dish={item}
-          style={{marginBottom: 3}}
-        />
+      <div className="column" style={{ padding: "14px" }}>
+        <dish.DishName dish={item} style={{ marginBottom: 3 }} />
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <dish.DishPrice dish={item} />
           <button
             style={{
-              position: 'absolute',
-              padding: '14px',
+              position: "absolute",
+              padding: "14px",
               right: 0,
               bottom: 0,
             }}

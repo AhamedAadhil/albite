@@ -1,0 +1,266 @@
+/* AboutusPage.module.css */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+.backgroundPattern {
+  background-color: #f9fafb;
+  background-image: radial-gradient(
+      circle,
+      rgba(230, 57, 70, 0.3) 2px,
+      transparent 3px
+    ),
+    radial-gradient(circle, rgba(255, 204, 0, 0.3) 2px, transparent 3px),
+    radial-gradient(circle, rgba(26, 26, 26, 0.15) 2px, transparent 3px);
+  background-position: 0 0, 20px 20px, 40px 40px;
+  background-size: 60px 60px;
+}
+
+.backgroundDiagonalStripes {
+  background-color: #fefefe;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(100, 100, 100, 0.05),
+    rgba(100, 100, 100, 0.05) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.backgroundCheckerDots {
+  background-color: #f7f9fa;
+  background-image: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.05) 4px,
+      transparent 4px
+    ),
+    radial-gradient(circle, rgba(0, 0, 0, 0.03) 4px, transparent 4px);
+  background-position: 0 0, 30px 30px;
+  background-size: 60px 60px;
+}
+
+.heroSection {
+  position: relative;
+  text-align: center;
+  padding: 100px 20px 140px;
+  color: #fff;
+  /* background-image: url("/assets/other/12.jpg"); */
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.heroLogo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  /* background: #fff; */
+  padding: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  max-width: 200px;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  /* background-color: rgba(0, 0, 0, 0.4); */
+  z-index: 0;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.heroSubtitle {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.sectionTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #111;
+  text-align: center;
+}
+
+.sectionSubTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.sectionText {
+  font-size: 1.125rem;
+  max-width: 720px;
+  margin: 0 auto 40px;
+  color: #555;
+}
+
+.objectivesList {
+  padding-left: 24px;
+  list-style-type: disc;
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+.historySection {
+  background-color: #eef6f7;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.1);
+  padding: 60px 24px;
+  text-align: center;
+  max-width: 960px;
+  margin: 0 auto 60px;
+  color: #444;
+}
+
+.chefsContainer {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 960px;
+  margin: 0 auto 60px;
+}
+
+.chefCard {
+  flex: 1 1 280px;
+  max-width: 300px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 5px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chefCardHover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+.chefImage {
+  border-radius: 14px;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+.chefName {
+  margin-top: 0;
+  font-size: 1.375rem;
+  color: #222;
+}
+
+.chefDescription {
+  font-size: 15px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.visionSection {
+  background-color: #d9f0f4;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.1);
+  padding: 60px 24px;
+  text-align: center;
+  max-width: 960px;
+  margin: 0 auto 60px;
+  color: #333;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.whyChooseList {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: 20px;
+  list-style-type: circle;
+  font-size: 1.15rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.contactSection {
+  padding: 60px 24px;
+  text-align: center;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  max-width: 960px;
+  margin: 0 auto 60px;
+}
+
+.contactTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.contactText {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  font-size: 1.125rem;
+  color: #555;
+}
+
+.contactButton {
+  display: inline-block;
+  background-color: #ed1a25;
+  color: #fff;
+  padding: 14px 36px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.125rem;
+  box-shadow: 0 6px 12px rgba(237, 26, 37, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.contactButton:hover,
+.contactButton:focus {
+  background-color: #c5141a;
+  box-shadow: 0 8px 18px rgba(197, 20, 26, 0.6);
+  outline: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .heroTitle {
+    font-size: 2.25rem;
+  }
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+  .sectionSubTitle {
+    font-size: 1.5rem;
+  }
+  .chefCard {
+    max-width: 100%;
+  }
+}

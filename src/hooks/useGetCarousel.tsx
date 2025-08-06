@@ -1,29 +1,38 @@
-import axios from 'axios';
-import {useState, useEffect} from 'react';
+import { useEffect, useState } from "react";
 
-import {URLS} from '../config';
-import {CarouselType} from '../types';
+interface CarouselItem {
+  _id: string;
+  image: string;
+  title: string;
+  link: string;
+}
 
-export const useGetCarousel = () => {
-  const [carousel, setCarousel] = useState<CarouselType[]>([]);
-  const [carouselLoading, setCarouselLoading] = useState<boolean>(false);
-
-  const getCarousel = async () => {
-    setCarouselLoading(true);
-
-    try {
-      const response = await axios.get(URLS.GET_CAROUSEL);
-      setCarousel(response.data.carousel);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCarouselLoading(false);
-    }
-  };
+export function useGetCarousel() {
+  const [carousel, setCarousel] = useState<CarouselItem[]>([]);
+  const [carouselLoading, setCarouselLoading] = useState(true);
 
   useEffect(() => {
-    getCarousel();
+    async function fetchCarousel() {
+      try {
+        const res = await fetch("/api/carousels", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const data = await res.json();
+        if (!res.ok)
+          throw new Error(data.message || "Failed to fetch carousel");
+
+        setCarousel(data.data || []);
+      } catch (error) {
+        console.error("Carousel fetch failed:", error);
+      } finally {
+        setCarouselLoading(false);
+      }
+    }
+
+    fetchCarousel();
   }, []);
 
-  return {carouselLoading, carousel};
-};
+  return { carousel, carouselLoading };
+}

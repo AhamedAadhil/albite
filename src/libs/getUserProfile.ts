@@ -2,7 +2,7 @@ import { User } from "@/stores/useAuthStore";
 
 export async function fetchUserProfile(): Promise<User | null> {
   try {
-    const res = await fetch("/api/me", {
+    const res = await fetch("/api/auth/me", {
       method: "GET",
       credentials: "include", // important to send cookie
     });

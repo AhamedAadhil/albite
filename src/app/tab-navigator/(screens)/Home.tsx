@@ -17,7 +17,6 @@ export const Home: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
 
   const { menuLoading } = hooks.useGetMenu();
-  const { dishes } = hooks.useGetDishes();
   const { recommendedDishes, recommendedLoading } =
     hooks.useGetRecommendedDishes();
 
@@ -148,25 +147,25 @@ export const Home: React.FC = () => {
           mousewheel={true}
           onSlideChange={handleSlideChange}
         >
-          {carousel.map((banner, index) => {
-            return (
-              <SwiperSlide key={banner.id}>
-                <Link href={`${Routes.MENU_ITEM}/${dishes[index].id}`}>
-                  <Image
-                    src={banner.banner}
-                    alt="Banner"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    priority={true}
-                    className="clickable"
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </Link>
-              </SwiperSlide>
-            );
-          })}
+          {carousel.map((item) => (
+            <SwiperSlide key={item._id}>
+              <Link href={item.link} passHref>
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  priority={true}
+                  className="clickable"
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </Link>
+            </SwiperSlide>
+          ))}
         </Swiper>
+
+        {/* Custom Pagination Dots */}
         <div
           style={{
             display: "flex",
@@ -179,22 +178,20 @@ export const Home: React.FC = () => {
             gap: 6,
           }}
         >
-          {carousel.map((_, index) => {
-            return (
-              <div
-                key={_.id}
-                style={{
-                  width: 8,
-                  height: activeSlide === index ? 20 : 8,
-                  borderRadius: 10,
-                  backgroundColor:
-                    activeSlide === index
-                      ? "var(--white-color)"
-                      : `rgba(255, 255, 255, 0.5)`,
-                }}
-              />
-            );
-          })}
+          {carousel.map((_, index) => (
+            <div
+              key={index}
+              style={{
+                width: 8,
+                height: activeSlide === index ? 20 : 8,
+                borderRadius: 10,
+                backgroundColor:
+                  activeSlide === index
+                    ? "var(--white-color)"
+                    : `rgba(255, 255, 255, 0.5)`,
+              }}
+            />
+          ))}
         </div>
       </section>
     );
@@ -221,6 +218,125 @@ export const Home: React.FC = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+      </section>
+    );
+  };
+
+  // const renderAboutUs = () => {
+  //   return (
+  //     <section
+  //       style={{
+  //         backgroundColor: "var(--white-color)",
+
+  //         borderRadius: 12,
+  //         padding: 20,
+  //         marginBottom: 30,
+  //         marginLeft: 20,
+  //         marginRight: 20,
+  //         boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+  //         textAlign: "center",
+  //         display: "flex",
+  //         flexDirection: "column",
+  //         alignItems: "center",
+  //       }}
+  //     >
+  //       <h2 style={{ fontSize: 20, marginBottom: 10, fontWeight: "bold" }}>
+  //         About Us
+  //       </h2>
+  //       <p
+  //         style={{
+  //           fontSize: 14,
+  //           color: "#444",
+  //           marginBottom: 16,
+  //           maxWidth: 320,
+  //           lineHeight: 1.5,
+  //         }}
+  //       >
+  //         We’re not just serving food — we’re delivering moments. With love in
+  //         every bite, our cloud kitchen blends tradition and innovation to bring
+  //         your cravings to life. Discover who we are and why thousands trust us
+  //         daily.
+  //       </p>
+  //       <Link
+  //         href={Routes.ABOUT_US}
+  //         style={{
+  //           display: "inline-block",
+  //           backgroundColor: "var(--main-turquoise)",
+  //           color: "#fff",
+  //           padding: "10px 20px",
+  //           borderRadius: 8,
+  //           fontWeight: "bold",
+  //           fontSize: 14,
+  //           textDecoration: "none",
+  //         }}
+  //       >
+  //         Learn More
+  //       </Link>
+  //     </section>
+  //   );
+  // };
+
+  const renderAboutUs = () => {
+    return (
+      <section
+        style={{
+          backgroundImage: `url("/assets/other/11.png")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          borderRadius: 12,
+          padding: 20,
+          marginBottom: 30,
+          marginLeft: 20,
+          marginRight: 20,
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          color: "#fff", // Set text color to white for better contrast
+        }}
+      >
+        <h2
+          style={{
+            fontSize: 20,
+            marginBottom: 10,
+            fontWeight: "bold",
+            color: "#F9A826  ",
+          }}
+        >
+          Who we are ?
+        </h2>
+        <p
+          style={{
+            fontSize: 14,
+            marginBottom: 16,
+            maxWidth: 320,
+            lineHeight: 1.5,
+            color: "#f0f0f0", // softer white
+            textShadow: "0 1px 2px rgba(0,0,0,0.5)", // better readability
+          }}
+        >
+          We’re not just serving food — we’re delivering moments. With love in
+          every bite, our cloud kitchen blends tradition and innovation to bring
+          your cravings to life. Discover who we are and why thousands trust us
+          daily.
+        </p>
+        <Link
+          href={Routes.ABOUT_US}
+          style={{
+            display: "inline-block",
+            backgroundColor: "#ED1A25 ",
+            color: "#fff",
+            padding: "10px 20px",
+            borderRadius: 8,
+            fontWeight: "bold",
+            fontSize: 14,
+            textDecoration: "none",
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          Learn More
+        </Link>
       </section>
     );
   };
@@ -260,6 +376,7 @@ export const Home: React.FC = () => {
         {renderCarousel()}
         {renderCategories()}
         {renderRecommendedDishes()}
+        {renderAboutUs()}
         {renderReviews()}
       </main>
     );

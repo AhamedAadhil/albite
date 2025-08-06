@@ -22,9 +22,11 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
     removeFromWishlist,
   } = stores.useWishlistStore();
 
-  const dishId = item.id;
+  const dishId = item._id ?? item.id;
 
-  const ifInWishlist = wishlist.find((item) => item.id === dishId);
+  const ifInWishlist = wishlist.find(
+    (item) => item._id === dishId || item.id === dishId
+  );
 
   return (
     <Link
@@ -48,16 +50,13 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
       <button
         style={{
           position: "absolute",
-          right: 0,
-          bottom: 72 - 15,
-          padding: 15,
-          borderRadius: 10,
+          right: 10,
+          top: 10,
+          padding: 8,
+          backgroundColor: "rgba(255,255,255,0.9)",
+          borderRadius: "50%",
+          zIndex: 2,
         }}
-        // onClick={(e) => {
-        //   e.preventDefault();
-        //   e.stopPropagation();
-        //   addToWishlist(item);
-        // }}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -70,6 +69,7 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
       >
         <svg.HeartSvg dish={item} />
       </button>
+
       <div className="column" style={{ padding: "14px" }}>
         <dish.DishName dish={item} style={{ marginBottom: 3 }} />
         <div

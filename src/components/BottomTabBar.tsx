@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
-import {svg} from '../svg';
-import {stores} from '../stores';
-import {TabScreens} from '../routes';
+import { svg } from "../svg";
+import { stores } from "../stores";
+import { TabScreens } from "../routes";
 
 const tabs = [
   {
@@ -35,18 +35,18 @@ const tabs = [
 ];
 
 export const BottomTabBar: React.FC = () => {
-  const {screen, setScreen} = stores.useTabStore();
+  const { screen, setScreen } = stores.useTabStore();
 
   return (
-    <section className='container'>
-      <nav style={{marginBottom: 10, marginTop: 10}}>
+    <section className="container">
+      <nav style={{ marginBottom: 10, marginTop: 10 }}>
         <ul
           style={{
-            display: 'flex',
+            display: "flex",
             borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            backgroundColor: 'var(--white-color)',
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "var(--white-color)",
           }}
         >
           {tabs.map((tab) => {
@@ -54,14 +54,14 @@ export const BottomTabBar: React.FC = () => {
               <li
                 key={tab.id}
                 style={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                   paddingTop: 15,
                   paddingBottom: 15,
                 }}
-                className='clickable'
+                className="clickable"
                 onClick={() => {
                   setScreen(tab.name);
                 }}
@@ -69,14 +69,10 @@ export const BottomTabBar: React.FC = () => {
                 <tab.icon
                   key={tab.id}
                   fillColor={
-                    screen === tab.name
-                      ? 'var(--main-turquoise)'
-                      : 'var(--text-color)'
+                    screen === tab.name ? "#ED1A25" : "var(--text-color)"
                   }
                   strokeColor={
-                    screen === tab.name
-                      ? 'var(--main-turquoise)'
-                      : 'var(--text-color)'
+                    screen === tab.name ? "#ED1A25" : "var(--text-color)"
                   }
                 />
                 <span
@@ -84,9 +80,7 @@ export const BottomTabBar: React.FC = () => {
                     fontSize: 9,
                     marginTop: 3,
                     color:
-                      screen === tab.name
-                        ? 'var(--main-turquoise)'
-                        : 'var(--text-color)',
+                      screen === tab.name ? "#ED1A25" : "var(--text-color)",
                   }}
                 >
                   {tab.name}

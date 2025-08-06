@@ -13,7 +13,6 @@ export const useGetMenu = (): { menuLoading: boolean; menu: MenuType[] } => {
 
     try {
       const response = await axios.get(URLS.GET_MENU);
-      console.log(response.data);
       setMenu(response.data.menu);
     } catch (error) {
       console.error(error);

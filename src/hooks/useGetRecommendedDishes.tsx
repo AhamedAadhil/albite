@@ -13,7 +13,7 @@ export const useGetRecommendedDishes = (): {
   const fetchRecommended = async () => {
     setRecommendedLoading(true);
     try {
-      const response = await axios.get(`/api/dishes?isRecommendad=true`);
+      const response = await axios.get(`/api/dishes?isRecommended=true`);
       setRecommendedDishes(response.data.dishes);
     } catch (error) {
       console.error("Failed to fetch recommended dishes", error);

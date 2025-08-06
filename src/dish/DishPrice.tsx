@@ -1,5 +1,5 @@
 import React from "react";
-import { User, UserRound } from "lucide-react"; // Importing Lucide icons
+import { UserIcon, BabyIcon } from "lucide-react";
 
 import type { DishType } from "../types";
 
@@ -27,9 +27,14 @@ export const DishPrice: React.FC<Props> = ({ dish }) => {
       <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
         <span>Serves :</span>
         {[...Array(adults)].map((_, i) => (
-          <User key={`adult-${i}`} size={16} strokeWidth={2} />
+          <UserIcon
+            color="#f9a826"
+            key={`adult-${i}`}
+            size={16}
+            strokeWidth={2}
+          />
         ))}
-        {hasChild && <UserRound size={14} strokeWidth={1.5} />}
+        {hasChild && <BabyIcon color="#f9a826" size={14} strokeWidth={1.5} />}
       </div>
     </div>
   );

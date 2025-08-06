@@ -1,5 +1,3 @@
-// /app/api/admin/dishes/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/config/db";
 import Dish from "@/models/dish";

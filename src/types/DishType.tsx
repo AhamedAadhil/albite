@@ -1,4 +1,7 @@
 export type DishType = {
+  isPopular: any;
+  calories: string;
+  isNewDish: any;
   servings: number;
   _id: string | null | undefined;
   id: number;

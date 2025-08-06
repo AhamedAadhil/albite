@@ -1,41 +1,36 @@
-'use client';
+"use client";
 
-import React, {useState} from 'react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import Link from "next/link";
 
-import {svg} from '../../../svg';
-import {items} from '../../../items';
-import {hooks} from '../../../hooks';
-import {Routes} from '../../../routes';
-import {components} from '../../../components';
-
-import type {DishType} from '../../../types';
+import { svg } from "../../../svg";
+import { items } from "../../../items";
+import { hooks } from "../../../hooks";
+import { Routes } from "../../../routes";
+import { components } from "../../../components";
 
 type Props = {
   category: string;
 };
 
-export const MenuList: React.FC<Props> = ({category}) => {
-  const {dishes, dishesLoading} = hooks.useGetDishes();
+export const MenuList: React.FC<Props> = ({ category }) => {
+  const filters: Record<string, string> = {};
 
-  const exists: DishType[] = dishes.filter((dish) =>
-    dish.menu.includes(category),
+  if (category !== "all") {
+    filters.mainCategory = category;
+  }
+
+  const { dishes, dishesLoading } = hooks.useGetDishes(filters);
+  const [search, setSearch] = useState("");
+
+  console.log("dishesd", dishes);
+
+  const filteredDishes = dishes.filter((dish) =>
+    dish.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  const list = category === 'all' ? dishes : exists;
-
-  const [search, setSearch] = useState('');
-  const filteredDishes = list.filter((dish) =>
-    dish.name.toLowerCase().includes(search.toLowerCase()),
-  );
-
   const renderHeader = () => {
     return (
-      <components.Header
-        title='Menu'
-        showGoBack={true}
-        showBasket={true}
-      />
+      <components.Header title="Menu" showGoBack={true} showBasket={true} />
     );
   };
 
@@ -44,20 +39,20 @@ export const MenuList: React.FC<Props> = ({category}) => {
 
     return (
       <section
-        className='row-center container'
+        className="row-center container"
         style={{
           gap: 5,
           marginTop: 10,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
           marginBottom: 14,
         }}
       >
         <components.InputField
-          inputType='search'
-          placeholder='Search ...'
-          containerStyle={{flex: 1, backgroundColor: 'var(--white-color)'}}
+          inputType="search"
+          placeholder="Search ..."
+          containerStyle={{ flex: 1, backgroundColor: "var(--white-color)" }}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -66,13 +61,13 @@ export const MenuList: React.FC<Props> = ({category}) => {
           style={{
             width: 50,
             height: 50,
-            backgroundColor: 'var(--white-color)',
+            backgroundColor: "var(--white-color)",
             borderRadius: 10,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          className='center'
+          className="center"
         >
           <svg.FilterSvg />
         </Link>
@@ -86,15 +81,15 @@ export const MenuList: React.FC<Props> = ({category}) => {
     if (filteredDishes.length === 0) {
       return (
         <section
-          className='container'
+          className="container"
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
           }}
         >
-          <span className='t16'>No dishes found</span>
+          <span className="t16">No dishes found</span>
         </section>
       );
     }
@@ -106,11 +101,7 @@ export const MenuList: React.FC<Props> = ({category}) => {
             const isLast = index === array.length - 1;
 
             return (
-              <items.MenuListItem
-                dish={dish}
-                key={dish.id}
-                isLast={isLast}
-              />
+              <items.MenuListItem dish={dish} key={dish._id} isLast={isLast} />
             );
           })}
         </ul>
@@ -120,10 +111,7 @@ export const MenuList: React.FC<Props> = ({category}) => {
 
   const renderContent = () => {
     return (
-      <main
-        className='container scrollable'
-        style={{paddingBottom: 20}}
-      >
+      <main className="container scrollable" style={{ paddingBottom: 20 }}>
         {renderDishes()}
       </main>
     );

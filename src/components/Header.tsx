@@ -69,7 +69,7 @@ export const Header: React.FC<Props> = ({
               width: 32,
               height: 32,
               borderRadius: "50%",
-              backgroundColor: "#007bff",
+              backgroundColor: "#ED1A25",
               color: "white",
               display: "flex",
               alignItems: "center",
@@ -127,7 +127,7 @@ export const Header: React.FC<Props> = ({
         <div
           style={{
             position: "absolute",
-            backgroundColor: "var(--main-turquoise)",
+            backgroundColor: "#ED1A25",
             padding: "5px 4px 3px 4px",
             borderRadius: "12px",
             right: 44,
@@ -145,7 +145,7 @@ export const Header: React.FC<Props> = ({
               fontSize: 10,
             }}
           >
-            ${total > 0 ? total.toFixed(2) : "0"}
+            Rs.{total > 0 ? total.toFixed(2) : "0"}
           </span>
         </div>
         <svg.HeaderBasketSvg />

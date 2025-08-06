@@ -1,21 +1,35 @@
-import axios from 'axios';
-import {useState, useEffect} from 'react';
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-import {URLS} from '../config';
-import {DishType} from '../types';
+import { DishType } from "../types";
 
-export const useGetDishes = () => {
+type DishFilters = {
+  mainCategory?: string;
+  isRecommended?: boolean;
+  isPopular?: boolean;
+  isNewDish?: boolean;
+};
+
+export const useGetDishes = (filters: DishFilters = {}) => {
   const [dishes, setDishes] = useState<DishType[]>([]);
   const [dishesLoading, setDishesLoading] = useState<boolean>(false);
 
   const getDishes = async () => {
     setDishesLoading(true);
-
     try {
-      const response = await axios.get(URLS.GET_DISHES);
+      const params = new URLSearchParams();
+
+      // Convert filters into query params
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          params.append(key, String(value));
+        }
+      });
+
+      const response = await axios.get(`/api/dishes?${params.toString()}`);
       setDishes(response.data.dishes);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch dishes", error);
     } finally {
       setDishesLoading(false);
     }
@@ -23,7 +37,7 @@ export const useGetDishes = () => {
 
   useEffect(() => {
     getDishes();
-  }, []);
+  }, [JSON.stringify(filters)]); // Refetch when filters change
 
-  return {dishesLoading, dishes};
+  return { dishesLoading, dishes };
 };

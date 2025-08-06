@@ -369,6 +369,242 @@ export const Home: React.FC = () => {
     );
   };
 
+  const renderFooter = () => {
+    return (
+      <footer
+        style={{
+          backgroundColor: "#222",
+          color: "#eee",
+          padding: "40px 0",
+          marginTop: 40,
+          borderTop: "4px solid #ed1a25",
+        }}
+        aria-label="Footer"
+      >
+        <div
+          style={{
+            maxWidth: 960,
+            margin: "0 auto",
+            paddingLeft: 20,
+            paddingRight: 20,
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: 30,
+          }}
+        >
+          {/* About Section */}
+          <div style={{ flex: "1 1 220px", minWidth: 220 }}>
+            <h3
+              style={{
+                fontWeight: "700",
+                fontSize: 18,
+                marginBottom: 12,
+                color: "#f9a826",
+              }}
+            >
+              About Albite
+            </h3>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: "#ccc" }}>
+              Albite Cloud Kitchen delivers fresh, flavorful meals with passion
+              and innovation. Since 2006, we’ve been serving memorable food
+              experiences.
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div style={{ flex: "1 1 180px", minWidth: 180 }}>
+            <h3
+              style={{
+                fontWeight: "700",
+                fontSize: 18,
+                marginBottom: 12,
+                color: "#f9a826",
+              }}
+            >
+              Quick Links
+            </h3>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                color: "#ccc",
+                fontSize: 14,
+              }}
+            >
+              <li style={{ marginBottom: 8 }}>
+                <Link
+                  href={Routes.ABOUT_US}
+                  style={{ color: "#eee", textDecoration: "none" }}
+                >
+                  About Us
+                </Link>
+              </li>
+              <li style={{ marginBottom: 8 }}>
+                <Link
+                  href={Routes.REVIEWS}
+                  style={{ color: "#eee", textDecoration: "none" }}
+                >
+                  Reviews
+                </Link>
+              </li>
+              <li style={{ marginBottom: 8 }}>
+                <Link
+                  href="/contact"
+                  style={{ color: "#eee", textDecoration: "none" }}
+                >
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div style={{ flex: "1 1 220px", minWidth: 220 }}>
+            <h3
+              style={{
+                fontWeight: "700",
+                fontSize: 18,
+                marginBottom: 12,
+                color: "#f9a826",
+              }}
+            >
+              Contact Us
+            </h3>
+            <address
+              style={{
+                fontStyle: "normal",
+                fontSize: 14,
+                color: "#ccc",
+                lineHeight: 1.6,
+              }}
+            >
+              123 Cloud Kitchen Blvd
+              <br />
+              Food City, FC 45678
+              <br />
+              Phone: (123) 456-7890
+              <br />
+              Email:{" "}
+              <a
+                href="mailto:info@albite.com"
+                style={{ color: "#f9a826", textDecoration: "none" }}
+              >
+                info@albite.com
+              </a>
+            </address>
+          </div>
+
+          {/* Social Media */}
+          <div style={{ flex: "1 1 180px", minWidth: 180 }}>
+            <h3
+              style={{
+                fontWeight: "700",
+                fontSize: 18,
+                marginBottom: 12,
+                color: "#f9a826",
+              }}
+            >
+              Follow Us
+            </h3>
+            <div style={{ display: "flex", gap: 12 }}>
+              <a
+                href="https://facebook.com/yourpage"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                style={{
+                  color: "#eee",
+                  fontSize: 24,
+                  textDecoration: "none",
+                }}
+              >
+                &#x1F426;
+              </a>
+              <a
+                href="https://instagram.com/yourpage"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                style={{
+                  color: "#eee",
+                  fontSize: 24,
+                  textDecoration: "none",
+                }}
+              >
+                &#x1F4F8;
+              </a>
+              <a
+                href="https://twitter.com/yourpage"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                style={{
+                  color: "#eee",
+                  fontSize: 24,
+                  textDecoration: "none",
+                }}
+              >
+                &#x1F426;
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: 12,
+            color: "#777",
+            marginTop: 30,
+            userSelect: "none",
+            paddingLeft: 20,
+            paddingRight: 20,
+          }}
+        >
+          © {new Date().getFullYear()} Albite Cloud Kitchen. All rights
+          reserved.
+        </div>
+        {/* Designed by */}
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: 9,
+            color: "#777",
+            marginTop: 0,
+            userSelect: "none",
+            paddingLeft: 20,
+            paddingRight: 20,
+          }}
+        >
+          <a
+            href="https://wa.me/94766611917"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#777",
+              textDecoration: "underline",
+              transition: "all 0.3s ease",
+              display: "inline-block",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.color = "#f9a826"; // gold highlight
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.color = "#777";
+            }}
+          >
+            Designed and Developed by Ahamed Aathil
+          </a>
+        </div>
+      </footer>
+    );
+  };
+
   const renderContent = () => {
     if (isLoading) return null;
     return (
@@ -378,6 +614,7 @@ export const Home: React.FC = () => {
         {renderRecommendedDishes()}
         {renderAboutUs()}
         {renderReviews()}
+        {renderFooter()}
       </main>
     );
   };

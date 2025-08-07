@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import PuffLoader from "react-spinners/PuffLoader";
+import { useRouter } from "next/navigation";
 
 import { items } from "../../../items";
 import { hooks } from "../../../hooks";
@@ -14,6 +15,7 @@ import { components } from "../../../components";
 import { customMenu } from "../data";
 
 export const Home: React.FC = () => {
+  const router = useRouter();
   const [activeSlide, setActiveSlide] = useState(0);
 
   const { menuLoading } = hooks.useGetMenu();
@@ -57,6 +59,9 @@ export const Home: React.FC = () => {
               <SwiperSlide key={item.id}>
                 <div
                   className="clickable"
+                  onClick={() => {
+                    router.push(`${Routes.MENU_LIST}/${item.id}`);
+                  }}
                   style={{
                     position: "relative",
                     opacity: item.isAvailable ? 1 : 0.5,

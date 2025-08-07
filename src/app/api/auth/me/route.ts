@@ -17,9 +17,14 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       );
     }
 
-    const profile = await User.findById(user._id).select(
-      "-password -totalSpent "
-    );
+    const profile = await User.findById(user._id)
+      .select("-password -totalSpent")
+      .populate({
+        path: "favourites",
+        model: "Dish",
+        select: "-totalOrders -addons",
+      });
+
     if (!profile) {
       return NextResponse.json(
         {

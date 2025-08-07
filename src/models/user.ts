@@ -109,7 +109,7 @@ const userSchema = new Schema<IUser>(
     favourites: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: "Dish",
       },
     ],
 

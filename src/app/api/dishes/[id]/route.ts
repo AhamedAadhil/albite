@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 // GET /api/dishes/[id]
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const user = await verifyToken();
@@ -22,7 +22,8 @@ export const GET = async (
     }
     await connectDB();
 
-    const dishId = params.id;
+    const awaitedParams = await params;
+    const dishId = awaitedParams.id;
     const dish = await Dish.findOne({ _id: dishId, isActive: true }).select(
       " -totalOrders -addons"
     );

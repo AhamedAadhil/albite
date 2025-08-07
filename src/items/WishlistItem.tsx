@@ -1,18 +1,18 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
-import {svg} from '../svg';
-import {Routes} from '../routes';
-import {stores} from '../stores';
-import {dish as dishItem} from '../dish';
+import { svg } from "../svg";
+import { Routes } from "../routes";
+import { stores } from "../stores";
+import { dish as dishItem } from "../dish";
 
-type Props = {dish: DishType};
+type Props = { dish: DishType };
 
-import type {DishType} from '../types';
+import type { DishType } from "../types";
 
-export const WishlistItem: React.FC<Props> = ({dish}) => {
-  const {addToCart} = stores.useCartStore();
+export const WishlistItem: React.FC<Props> = ({ dish }) => {
+  const { addToCart } = stores.useCartStore();
 
   const {
     list: wishlist,
@@ -20,52 +20,52 @@ export const WishlistItem: React.FC<Props> = ({dish}) => {
     removeFromWishlist,
   } = stores.useWishlistStore();
 
-  const ifInWishlist = wishlist.find((item) => item.id === dish.id);
+  const ifInWishlist = wishlist.find((item) => item._id === dish._id);
 
   return (
     <li
       style={{
-        backgroundColor: 'var(--white-color)',
+        backgroundColor: "var(--white-color)",
         borderRadius: 10,
-        position: 'relative',
+        position: "relative",
       }}
     >
-      <Link href={`${Routes.MENU_ITEM}/${dish.id}`}>
+      <Link href={`${Routes.MENU_ITEM}/${dish._id}`}>
         <Image
           src={dish.image}
-          alt={'dish'}
+          alt={"dish"}
           width={0}
           height={0}
-          sizes='100vw'
+          sizes="100vw"
           style={{
-            width: '90%',
-            height: 'auto',
+            width: "90%",
+            height: "auto",
             borderRadius: 10,
-            margin: '0 auto',
+            margin: "0 auto",
           }}
         />
         {dish.isNew && (
           <Image
-            alt='New'
+            alt="New"
             width={33.69}
             height={29}
-            src={'/assets/icons/14.png'}
-            style={{left: 14, top: 14, position: 'absolute'}}
+            src={"/assets/icons/14.png"}
+            style={{ left: 14, top: 14, position: "absolute" }}
           />
         )}
         {dish.isHot && (
           <Image
-            src={'/assets/icons/15.png'}
+            src={"/assets/icons/15.png"}
             priority={true}
-            alt='Hot'
+            alt="Hot"
             width={18}
             height={33}
-            style={{left: 14, top: 14, position: 'absolute'}}
+            style={{ left: 14, top: 14, position: "absolute" }}
           />
         )}
         <button
           style={{
-            position: 'absolute',
+            position: "absolute",
             padding: 14,
             right: 0,
             bottom: 72 - 15,
@@ -83,12 +83,9 @@ export const WishlistItem: React.FC<Props> = ({dish}) => {
         >
           <svg.HeartSvg dish={dish} />
         </button>
-        <div style={{padding: 14, paddingTop: 0}}>
-          <div style={{marginRight: 14}}>
-            <dishItem.DishName
-              dish={dish}
-              style={{marginBottom: 3}}
-            />
+        <div style={{ padding: 14, paddingTop: 0 }}>
+          <div style={{ marginRight: 14 }}>
+            <dishItem.DishName dish={dish} style={{ marginBottom: 3 }} />
           </div>
           <dishItem.DishPrice dish={dish} />
           <button
@@ -98,7 +95,7 @@ export const WishlistItem: React.FC<Props> = ({dish}) => {
               addToCart(dish);
             }}
             style={{
-              position: 'absolute',
+              position: "absolute",
               padding: 14,
               right: 0,
               bottom: 0,

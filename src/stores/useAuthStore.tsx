@@ -1,3 +1,4 @@
+import { DishType } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -9,6 +10,7 @@ export type User = {
   role: number;
   isVerified: boolean;
   token: string;
+  favorites: DishType[];
   region?: string;
 };
 

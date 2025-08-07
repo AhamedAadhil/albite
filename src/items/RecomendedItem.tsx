@@ -22,10 +22,10 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
     removeFromWishlist,
   } = stores.useWishlistStore();
 
-  const dishId = item._id ?? item.id;
+  const dishId = item._id ?? item._id;
 
   const ifInWishlist = wishlist.find(
-    (item) => item._id === dishId || item.id === dishId
+    (item) => item._id === dishId || item._id === dishId
   );
 
   return (

@@ -8,7 +8,7 @@ type Props = { dish: DishType };
 export const HeartSvg: React.FC<Props> = ({ dish }) => {
   const { list } = stores.useWishlistStore();
   const ifInWishlist = list.find(
-    (item) => item._id === dish._id || item.id === dish.id
+    (item) => item._id === dish._id || item._id === dish._id
   );
 
   return (

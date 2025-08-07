@@ -9,6 +9,7 @@ import { svg } from "../../svg";
 import { Routes } from "../../routes";
 import { components } from "../../components";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useWishlistStore } from "@/stores/useWishlistStore";
 import { fetchUserProfile } from "@/libs/getUserProfile";
 
 export const SignIn: React.FC = () => {
@@ -48,6 +49,9 @@ export const SignIn: React.FC = () => {
       const fullProfile = await fetchUserProfile();
       if (fullProfile) {
         updateUser(fullProfile); // this will merge fields like region, etc.
+      }
+      if (fullProfile?.favorites) {
+        useWishlistStore.getState().setList(fullProfile.favorites);
       }
 
       toast.success(data.message || "Signed in successfully!");

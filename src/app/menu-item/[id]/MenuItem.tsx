@@ -8,6 +8,7 @@ import { stores } from "../../../stores";
 import { components } from "../../../components";
 import { DishType } from "@/types";
 import { UserIcon, BabyIcon } from "lucide-react";
+import { renderLoader } from "@/components/Loader";
 
 type Props = {
   menuItemId: string;
@@ -604,11 +605,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   };
 
   if (loading) {
-    return (
-      <p style={{ padding: 20, textAlign: "center" }}>
-        Loading dish details...
-      </p>
-    );
+    return renderLoader();
   }
 
   if (!dish) {

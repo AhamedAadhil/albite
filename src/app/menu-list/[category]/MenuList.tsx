@@ -23,8 +23,6 @@ export const MenuList: React.FC<Props> = ({ category }) => {
   const { dishes, dishesLoading } = hooks.useGetDishes(filters);
   const [search, setSearch] = useState("");
 
-  console.log("dishesd", dishes);
-
   const filteredDishes = dishes.filter((dish) =>
     dish.name.toLowerCase().includes(search.toLowerCase())
   );

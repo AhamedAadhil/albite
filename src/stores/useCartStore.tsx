@@ -1,7 +1,7 @@
-import {create} from 'zustand';
-import {persist} from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-import type {DishType} from '../types';
+import type { DishType, CartItemType } from "../types";
 
 export type CartStateType = {
   total: number;
@@ -11,8 +11,8 @@ export type CartStateType = {
   promoCode: string;
   list: DishType[];
   discountAmount: number;
-  addToCart: (dish: DishType) => void;
-  removeFromCart: (dish: DishType) => void;
+  addToCart: (dish: CartItemType) => void;
+  removeFromCart: (dish: CartItemType) => void;
   setDiscount: (discount: number) => void;
   resetCart: () => void;
   setPromoCode: (promoCode: string) => void;
@@ -20,14 +20,14 @@ export type CartStateType = {
 
 const initialState: Omit<
   CartStateType,
-  'addToCart' | 'removeFromCart' | 'setDiscount' | 'resetCart' | 'setPromoCode'
+  "addToCart" | "removeFromCart" | "setDiscount" | "resetCart" | "setPromoCode"
 > = {
   total: 0,
   list: [],
   delivery: 0,
   discount: 0,
   subtotal: 0,
-  promoCode: '',
+  promoCode: "",
   discountAmount: 0,
 };
 
@@ -37,11 +37,11 @@ export const useCartStore = create<CartStateType>()(
       ...initialState,
       addToCart: (dish) => {
         set((state) => {
-          const inCart = state.list.find((item) => item.id === dish.id);
+          const inCart = state.list.find((item) => item._id === dish._id);
 
           if (inCart) {
             state.list = state.list.map((item) => {
-              if (item.id === dish.id) {
+              if (item._id === dish._id) {
                 if (item.quantity) {
                   item.quantity += 1;
                 }
@@ -50,7 +50,7 @@ export const useCartStore = create<CartStateType>()(
             });
             state.subtotal += Number(dish.price);
             state.discountAmount = Number(
-              (state.subtotal - state.total).toFixed(2),
+              (state.subtotal - state.total).toFixed(2)
             );
             state.total += Number(dish.price) * (1 - state.discount / 100);
           } else {
@@ -62,16 +62,16 @@ export const useCartStore = create<CartStateType>()(
             state.total += Number(dish.price) * (1 - state.discount / 100);
           }
 
-          return {...state};
+          return { ...state };
         });
       },
       removeFromCart: (dish) => {
         set((state) => {
-          const inCart = state.list.find((item) => item.id === dish.id);
+          const inCart = state.list.find((item) => item._id === dish._id);
 
           if (inCart) {
             state.list = state.list.reduce((acc, item) => {
-              if (item.id === dish.id) {
+              if (item._id === dish._id) {
                 if (item.quantity && item.quantity > 1) {
                   item.quantity -= 1;
                   acc.push(item);
@@ -83,17 +83,17 @@ export const useCartStore = create<CartStateType>()(
             }, [] as DishType[]);
             state.subtotal -= Number(dish.price);
             state.discountAmount = Number(
-              (state.subtotal - state.total).toFixed(2),
+              (state.subtotal - state.total).toFixed(2)
             );
             state.total -= Number(dish.price) * (1 - state.discount / 100);
 
             if (state.list.length === 0) {
               state.discount = 0;
-              state.promoCode = '';
+              state.promoCode = "";
             }
           }
 
-          return {...state};
+          return { ...state };
         });
       },
       setDiscount: (discount) => {
@@ -101,7 +101,7 @@ export const useCartStore = create<CartStateType>()(
           state.discount = discount;
           state.total = state.subtotal * (1 - discount / 100);
           state.discountAmount = state.subtotal - state.total;
-          return {...state};
+          return { ...state };
         });
       },
       resetCart: () => {
@@ -112,12 +112,12 @@ export const useCartStore = create<CartStateType>()(
       setPromoCode: (promoCode) => {
         set((state) => {
           state.promoCode = promoCode;
-          return {...state};
+          return { ...state };
         });
       },
     }),
     {
-      name: 'cart-storage',
-    },
-  ),
+      name: "cart-storage",
+    }
+  )
 );

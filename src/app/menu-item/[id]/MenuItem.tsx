@@ -1,303 +1,644 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
-import {svg} from '../../../svg';
-import {hooks} from '../../../hooks';
-import {Routes} from '../../../routes';
-import {stores} from '../../../stores';
-import {components} from '../../../components';
+import { svg } from "../../../svg";
+import { stores } from "../../../stores";
+import { components } from "../../../components";
+import { DishType } from "@/types";
+import { UserIcon, BabyIcon } from "lucide-react";
 
 type Props = {
   menuItemId: string;
 };
 
-const MinusSvg = () => {
-  return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      width={14}
-      height={14}
-      fill='none'
-    >
-      <path
-        stroke='#0C1D2E'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-        strokeWidth={1.2}
-        d='M2.898 7h8.114'
-      />
-    </svg>
-  );
+type AddOn = {
+  image: string | undefined;
+  _id: string;
+  name: string;
+  price: number;
+  mainCategory: "breakfast" | "lunch" | "dinner";
+  isActive: boolean;
 };
 
-const PlusSvg = () => {
-  return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      width={14}
-      height={14}
-      fill='none'
-    >
-      <path
-        stroke='#0C1D2E'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-        strokeWidth={1.2}
-        d='M6.955 2.917v8.166M2.898 7h8.114'
-      />
-    </svg>
-  );
-};
+export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
+  const [dish, setDish] = useState<DishType | null>(null);
+  const [addons, setAddons] = useState<AddOn[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [parcelType, setParcelType] = useState<"box" | "bag">("box");
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
-export const MenuItem: React.FC<Props> = ({menuItemId}) => {
-  const {dishes} = hooks.useGetDishes();
-  const {list: cart, addToCart, removeFromCart} = stores.useCartStore();
+  const {
+    list: cart,
+    addToCart,
+    removeFromCart,
+    // clearCart,
+  } = stores.useCartStore();
   const {
     list: wishlist,
     addToWishlist,
     removeFromWishlist,
   } = stores.useWishlistStore();
 
-  const quantity =
-    cart.find((item) => Number(item.id) === Number(menuItemId))?.quantity ?? 0;
+  const quantity = cart.find((item) => item._id === dish?._id)?.quantity ?? 1;
+  const ifInWishlist = wishlist.find((item) => item._id === dish?._id);
 
-  const dish = dishes.find((dish) => Number(dish.id) === Number(menuItemId));
+  // 🍱 Fetch dish & addons
+  useEffect(() => {
+    const fetchDish = async () => {
+      try {
+        const res = await fetch(`/api/dishes/${menuItemId}`, {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (data.success) {
+          setDish(data.dish);
+          setAddons(data.addons);
+          setParcelType(data.dish.parcelOptions[0] ?? "box");
+        }
+      } catch (err) {
+        console.error("Error fetching dish", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDish();
+  }, [menuItemId]);
 
-  const ifInWishlist = wishlist.find((item) => item.id === dish?.id);
+  // ⏰ Dish availability logic
+  const isDishAvailable = (dish: DishType | null): boolean => {
+    if (!dish || !dish.isActive) return false;
+    const now = new Date();
+    const [hour, minute] = dish.availableBefore.split(":").map(Number);
+    const availableUntil = new Date();
+    availableUntil.setHours(hour, minute, 0, 0);
+    return now < availableUntil;
+  };
 
-  if (!dish) {
-    return (
-      <section>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
-          }}
-        >
-          <p>Not found</p>
-        </div>
-      </section>
-    );
-  }
+  const handleAddToCart = () => {
+    if (!dish) return;
 
-  const renderHeader = () => {
-    return (
-      <components.Header
-        showGoBack={true}
-        showBasket={true}
-      />
-    );
+    if (!isDishAvailable(dish)) {
+      alert("This dish is not available at this time.");
+      return;
+    }
+
+    const existingCategory = cart[0]?.mainCategory;
+    if (
+      cart.length > 0 &&
+      existingCategory &&
+      existingCategory !== dish.mainCategory
+    ) {
+      const confirmClear = confirm(
+        `Your cart contains ${existingCategory} items. Replace with ${dish.mainCategory}?`
+      );
+      if (!confirmClear) return;
+      // clearCart();
+      // TODO: implement clear cart
+      console.log("clear cart");
+    }
+
+    addToCart({
+      ...dish,
+      _id: dish._id,
+      parcelOptions: [parcelType],
+      selectedAddons,
+      mainCategory: dish.mainCategory,
+    });
   };
 
   const renderImage = () => {
     return (
       <section
         style={{
-          position: 'relative',
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'var(--white-color)',
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "var(--white-color)",
+          padding: "30px 0 40px",
+          boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+          borderRadius: 16,
         }}
-        className='flex-center'
       >
+        {/* Main Dish Image */}
         <Image
-          src={dish?.image ?? ''}
-          alt={'Dish'}
-          width={0}
+          src={dish?.image ?? ""}
+          alt={dish?.name ?? "Dish"}
+          width={500}
           height={0}
-          sizes='100vw'
-          style={{width: '70%', height: 'auto'}}
-        />
-        {dish.isNew && (
-          <Image
-            alt={dish.name}
-            width={58.09}
-            height={50}
-            src={'/assets/icons/14.png'}
-            style={{position: 'absolute', top: 21, left: 20}}
-          />
-        )}
-        {dish.isHot && (
-          <Image
-            alt='Hot'
-            src={'/assets/icons/15.png'}
-            priority={true}
-            width={24}
-            height={44}
-            style={{
-              left: 0,
-              top: 0,
-              marginLeft: 20,
-              marginTop: 20,
-              height: 'auto',
-              position: 'absolute',
-            }}
-          />
-        )}
-        <button
+          sizes="100vw"
           style={{
-            position: 'absolute',
+            width: "70%",
+            height: "auto",
+            borderRadius: 10,
+            objectFit: "cover",
+          }}
+        />
+
+        {/* New Dish Icon */}
+        {dish?.isNewDish && (
+          <Image
+            src="/assets/icons/14.png"
+            alt="New"
+            width={58}
+            height={50}
+            style={{ position: "absolute", top: 21, left: 20 }}
+          />
+        )}
+
+        {/* Wishlist Button */}
+        <button
+          aria-label={ifInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          style={{
+            position: "absolute",
             top: 25,
             right: 23,
-            borderRadius: 2,
+            background: "rgba(255,255,255,0.85)",
+            borderRadius: "50%",
+            border: "none",
+            padding: 8,
+            cursor: "pointer",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            transition: "background 0.3s",
           }}
           onClick={(e) => {
-            e.stopPropagation();
             e.preventDefault();
-            if (ifInWishlist) {
-              removeFromWishlist(dish);
-            } else {
-              addToWishlist(dish);
-            }
+            if (!dish) return;
+            if (ifInWishlist) removeFromWishlist(dish);
+            else addToWishlist(dish);
           }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "rgba(255, 230, 230, 0.95)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "rgba(255,255,255,0.85)")
+          }
         >
-          <svg.HeartBigSvg dish={dish} />
+          {dish && <svg.HeartBigSvg dish={dish} />}
         </button>
       </section>
     );
   };
 
-  const renderDetails = () => {
-    return (
-      <section
-        className='container'
-        style={{marginBottom: 20, marginTop: 30}}
+  const renderDetails = () => (
+    <section
+      className="container"
+      style={{
+        marginTop: 25,
+        marginBottom: 25,
+        padding: "0 10px",
+      }}
+    >
+      <div
+        style={{
+          marginBottom: 14,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "8px",
+        }}
       >
-        <div
+        <h3
           style={{
-            marginBottom: 12,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            textTransform: "capitalize",
+            fontSize: 26,
+            fontWeight: "700",
+            color: "#2c3e50",
+            marginRight: 12,
+            flexGrow: 1,
           }}
         >
-          <h3
-            className='number-of-lines-1'
-            style={{textTransform: 'capitalize'}}
-          >
-            {dish?.name}
-          </h3>
-          <span
-            className='t16'
-            style={{marginLeft: 14, whiteSpace: 'nowrap'}}
-          >
-            {dish?.kcal} kcal - {dish?.weight}g
-          </span>
-        </div>
-        <p className='t16'>{dish?.description}</p>
-      </section>
-    );
-  };
+          {dish?.name}
+        </h3>
 
-  const renderPriceWithCounter = () => {
-    return (
-      <section className='container'>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: 'var(--white-color)',
-            borderRadius: 'var(--border-radius)',
+            display: "flex",
+            gap: 6,
+            flexWrap: "wrap",
+            alignItems: "center",
+            whiteSpace: "nowrap",
           }}
         >
-          <div
-            style={{
-              paddingTop: '14px',
-              paddingBottom: '14px',
-              paddingLeft: '20px',
-            }}
-          >
+          {dish?.isRecommended && (
             <span
               style={{
-                fontSize: '20px',
-                fontWeight: 'var(--fw-bold)',
-                fontFamily: 'DM Sans',
+                backgroundColor: "#FFDF80",
+                color: "#663C00",
+                padding: "4px 10px",
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: "bold",
+                boxShadow: "0 1px 5px rgba(255, 223, 128, 0.7)",
               }}
             >
-              ${dish?.price}
+              Recommended
             </span>
-          </div>
-          <div
+          )}
+
+          {dish?.isPopular && (
+            <span
+              style={{
+                backgroundColor: "#F08080",
+                color: "white",
+                padding: "4px 10px",
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: "bold",
+                boxShadow: "0 1px 5px rgba(240, 128, 128, 0.7)",
+              }}
+            >
+              Popular
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* New block for averageRating and reviews count */}
+      {dish?.averageRating !== undefined && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            fontSize: 14,
+            color: "#555",
+            marginBottom: 12,
+            fontWeight: 500,
+          }}
+        >
+          <span
             style={{
-              display: 'flex',
-              alignItems: 'center',
+              backgroundColor: "#FFD166",
+              borderRadius: 4,
+              padding: "2px 6px",
+              fontWeight: "700",
             }}
           >
-            <button
-              style={{padding: '20px'}}
-              onClick={() => {
-                removeFromCart(dish);
-              }}
-            >
-              <MinusSvg />
-            </button>
-
-            <span className='t14'>{quantity}</span>
-
-            <button
-              style={{padding: '20px'}}
-              onClick={() => {
-                addToCart(dish);
-              }}
-            >
-              <PlusSvg />
-            </button>
-          </div>
+            {dish.averageRating.toFixed(1)} ★
+          </span>
+          <span>({dish.reviews?.length ?? 0} reviews)</span>
         </div>
+      )}
+
+      <span
+        className="t16"
+        style={{
+          color: "#666666",
+          fontWeight: "500",
+          fontSize: 14,
+          marginBottom: 10,
+          display: "block",
+          opacity: 0.8,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span>{dish?.calories} kcal •</span>
+          <span
+            style={{ display: "flex", alignItems: "center", gap: 2 }}
+            aria-label={`Serves ${dish?.servings} persons`}
+          >
+            {" "}
+            Serves:
+            {dish?.servings !== undefined &&
+              Array.from({ length: Math.floor(dish?.servings) }).map((_, i) => (
+                <UserIcon color="#f9a826" key={`user-${i}`} size={14} />
+              ))}
+            {dish?.servings !== undefined && dish?.servings % 1 !== 0 && (
+              <BabyIcon color="#f9a826" size={14} />
+            )}
+          </span>
+        </div>
+      </span>
+
+      <p
+        className="t16"
+        style={{
+          fontSize: 16,
+          color: "#444444",
+          lineHeight: 1.5,
+          fontWeight: "400",
+        }}
+      >
+        {dish?.description}
+      </p>
+    </section>
+  );
+
+  const renderParcelOptions = () =>
+    dish?.parcelOptions && (
+      <section
+        className="container"
+        style={{
+          marginBottom: 20,
+          padding: "0 10px",
+        }}
+      >
+        <h4
+          style={{
+            marginBottom: 10,
+            fontSize: 18,
+            fontWeight: "600",
+            color: "#333333",
+          }}
+        >
+          Select Parcel Type
+        </h4>
+        {dish.parcelOptions.map((option: any) => (
+          <button
+            key={option}
+            onClick={() => setParcelType(option)}
+            style={{
+              display: "inline-block",
+              marginRight: 12,
+              padding: "8px 14px",
+              border:
+                parcelType === option ? "2px solid #2c3e50" : "1px solid #ccc",
+              backgroundColor: parcelType === option ? "#f0f4f8" : "white",
+              borderRadius: 8,
+              fontWeight: parcelType === option ? "700" : "500",
+              cursor: "pointer",
+              transition: "all 0.2s ease-in-out",
+              marginBottom: 10,
+            }}
+          >
+            {option.charAt(0).toUpperCase() + option.slice(1)}
+          </button>
+        ))}
       </section>
     );
+
+  const renderAddOns = () =>
+    addons.length > 0 && (
+      <section
+        className="container"
+        style={{
+          marginBottom: 30,
+          padding: "0 10px",
+        }}
+      >
+        <h4
+          style={{
+            marginBottom: 12,
+            fontSize: 18,
+            fontWeight: "600",
+            color: "#333333",
+          }}
+        >
+          Add-ons
+        </h4>
+        {addons.map((addon) => (
+          <label
+            key={addon._id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: 10,
+              cursor: "pointer",
+              fontSize: 15,
+              color: "#444",
+              userSelect: "none",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={selectedAddons.includes(addon._id)}
+              onChange={() =>
+                setSelectedAddons((prev) =>
+                  prev.includes(addon._id)
+                    ? prev.filter((id) => id !== addon._id)
+                    : [...prev, addon._id]
+                )
+              }
+              style={{
+                marginRight: 12,
+                cursor: "pointer",
+                minWidth: 18,
+                minHeight: 18,
+              }}
+            />
+            {/* Addon image */}
+            <img
+              src={addon.image}
+              alt={addon.name}
+              style={{
+                width: 40,
+                height: 40,
+                objectFit: "cover",
+                borderRadius: 6,
+                marginRight: 12,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                flexShrink: 0,
+              }}
+            />
+            <span>
+              {addon.name}{" "}
+              <span style={{ color: "#888" }}> (+Rs.{addon.price})</span>
+            </span>
+          </label>
+        ))}
+      </section>
+    );
+
+  const renderPriceWithCounter = () => (
+    <section
+      className="container"
+      style={{
+        padding: "0 10px",
+        marginBottom: 30,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "var(--white-color)",
+          borderRadius: "var(--border-radius)",
+          boxShadow: "0 2px 7px rgba(0,0,0,0.07)",
+          padding: "14px 24px",
+        }}
+      >
+        <div>
+          <span
+            style={{
+              fontSize: 22,
+              fontWeight: "bold",
+              color: "#222222",
+              letterSpacing: 0.3,
+            }}
+          >
+            Rs.{dish?.price}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+          <button
+            style={{
+              padding: 14,
+              border: "none",
+              backgroundColor: "#e5e5e5",
+              borderRadius: 8,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background-color 0.2s",
+            }}
+            onClick={() => dish && removeFromCart(dish)}
+            aria-label="Remove one item"
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#d4d4d4")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#e5e5e5")
+            }
+          >
+            <svg.MinusSvg />
+          </button>
+          <span
+            className="t14"
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              minWidth: 22,
+              textAlign: "center",
+            }}
+          >
+            {quantity}
+          </span>
+          <button
+            style={{
+              padding: 14,
+              border: "none",
+              backgroundColor: "#2c3e50",
+              borderRadius: 8,
+              cursor: "pointer",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background-color 0.2s",
+            }}
+            onClick={handleAddToCart}
+            aria-label="Add one item"
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1f2b37")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2c3e50")
+            }
+          >
+            <svg.PlusSvg />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+
+  const formatTime = (timeStr: string) => {
+    const [hour, minute] = timeStr.split(":").map(Number);
+    // Format to 12-hour am/pm format (optional)
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hr12 = hour % 12 === 0 ? 12 : hour % 12;
+    const paddedMinute = minute.toString().padStart(2, "0");
+    return `${hr12}:${paddedMinute} ${ampm}`;
   };
 
-  const renderButton = () => {
+  const renderActions = () => {
+    if (!dish) return null;
+
+    const [hour, minute] = dish.availableBefore.split(":").map(Number);
+    const availableUntil = new Date();
+    availableUntil.setHours(hour, minute, 0, 0);
+
+    const isAvailable = isDishAvailable(dish);
+
+    // Assuming availableFrom is midnight 00:00
+    const availableFromTime = "00:00"; // You can adjust this if you have actual start time.
+    const availableFromFormatted = formatTime(availableFromTime);
+
     return (
       <section
-        className='container'
-        style={{paddingTop: 10, paddingBottom: 20}}
+        className="container"
+        style={{
+          paddingTop: 10,
+          paddingBottom: 40,
+          paddingLeft: 10,
+          paddingRight: 10,
+        }}
       >
         <components.Button
-          label='+ Add to cart'
-          onClick={() => addToCart(dish)}
-          containerStyle={{marginBottom: 10}}
+          label={
+            isAvailable
+              ? `Add to Cart (Rs.${
+                  dish.price +
+                  addons
+                    .filter((addon) => selectedAddons.includes(addon._id))
+                    .reduce((acc, addon) => acc + addon.price, 0)
+                })`
+              : `Available from ${availableFromFormatted}`
+          }
+          onClick={handleAddToCart}
+          disabled={!isAvailable}
+          containerStyle={{
+            marginBottom: 14,
+            width: "100%",
+            fontSize: 18,
+            fontWeight: "700",
+            borderRadius: 12,
+          }}
         />
+
         <components.Button
-          label='Reviews'
-          href={Routes.REVIEWS}
-          colorScheme='secondary'
+          label="Reviews"
+          href="/reviews"
+          colorScheme="secondary"
+          containerStyle={{ width: "100%", fontSize: 16, fontWeight: "600" }}
         />
       </section>
     );
   };
 
-  const renderContent = () => {
+  if (loading) {
     return (
+      <p style={{ padding: 20, textAlign: "center" }}>
+        Loading dish details...
+      </p>
+    );
+  }
+
+  if (!dish) {
+    return <p style={{ padding: 20, textAlign: "center" }}>Dish not found</p>;
+  }
+
+  return (
+    <components.Screen>
+      <components.Header showGoBack showBasket />
       <div
-        className='scrollable'
+        className="scrollable"
         style={{
           flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "#fafafa",
+          borderRadius: 16,
+          margin: "0 10px 20px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+          overflowY: "auto",
+          paddingBottom: 10,
         }}
       >
         {renderImage()}
         {renderDetails()}
+        {renderParcelOptions()}
+        {renderAddOns()}
         {renderPriceWithCounter()}
-        {renderButton()}
+        {renderActions()}
       </div>
-    );
-  };
-
-  return (
-    <components.Screen>
-      {renderHeader()}
-      {renderContent()}
     </components.Screen>
   );
 };

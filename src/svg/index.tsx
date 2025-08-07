@@ -41,6 +41,7 @@ import { StatusCheckSvg } from "./StatusCheckSvg";
 import { HeaderBasketSvg } from "./HeaderBasketSvg";
 import { ApplyPromocodeSvg } from "./ApplyPromocodeSvg";
 import { NotificationCheckSvg } from "./NotificationCheckSvg";
+import { MinusSvg } from "./MinusSvg";
 
 import { HomeTabSvg } from "./tabs/HomeTabSvg";
 import { BellTabSvg } from "./tabs/BellTabSvg";
@@ -97,4 +98,5 @@ export const svg = {
   HeaderBasketSvg,
   ApplyPromocodeSvg,
   NotificationCheckSvg,
+  MinusSvg,
 };

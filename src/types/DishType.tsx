@@ -1,10 +1,15 @@
 export type DishType = {
+  mainCategory: any;
+  parcelOptions: any;
+  averageRating: number;
+  reviews: any[];
+  availableBefore: any;
+  isActive: any;
   isPopular: any;
   calories: string;
   isNewDish: any;
   servings: number;
   _id: string | null | undefined;
-  id: number;
   name: string;
   kcal: string;
   image: string;

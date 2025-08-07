@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import styles from "../../css/AboutusPage.module.css";
 
 const chefs = [
@@ -183,9 +182,14 @@ const AboutusPage: React.FC = () => {
             Whether you're a vendor, chef, partner, or customer—we’d love to
             hear from you. Let’s build the future of food together.
           </p>
-          <Link href="/contact" className={styles.contactButton}>
+          <a
+            href="https://wa.me/94712345678?text=Hi%20there%2C%20I%20would%20like%20to%20know%20more%20about%20your%20menu."
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.contactButton}
+          >
             Contact Us
-          </Link>
+          </a>
         </section>
       </div>
     </main>

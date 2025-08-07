@@ -25,10 +25,14 @@ type AddOn = {
 
 export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   const [dish, setDish] = useState<DishType | null>(null);
+  const [dishQuantity, setDishQuantity] = useState(1);
   const [addons, setAddons] = useState<AddOn[]>([]);
   const [loading, setLoading] = useState(true);
   const [parcelType, setParcelType] = useState<"box" | "bag">("box");
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  // Instead of string array, use a map of addonId to quantity
+  const [selectedAddons, setSelectedAddons] = useState<{
+    [addonId: string]: number;
+  }>({});
 
   const {
     list: cart,
@@ -78,6 +82,33 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     return now < availableUntil;
   };
 
+  const incrementAddon = (id: string) => {
+    setSelectedAddons((prev) => ({
+      ...prev,
+      [id]: (prev[id] ?? 0) + 1,
+    }));
+  };
+
+  const decrementAddon = (id: string) => {
+    setSelectedAddons((prev) => {
+      if (!prev[id]) return prev;
+      const newQty = prev[id] - 1;
+      if (newQty <= 0) {
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [id]: newQty };
+    });
+  };
+
+  const incrementQuantity = () => {
+    setDishQuantity((prevQty) => prevQty + 1);
+  };
+
+  const decrementQuantity = () => {
+    setDishQuantity((prevQty) => (prevQty > 1 ? prevQty - 1 : 1));
+  };
+
   const handleAddToCart = () => {
     if (!dish) return;
 
@@ -104,8 +135,9 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     addToCart({
       ...dish,
       _id: dish._id,
+      quantity: dishQuantity,
       parcelOptions: [parcelType],
-      selectedAddons,
+      //  selectedAddons,
       mainCategory: dish.mainCategory,
     });
   };
@@ -392,56 +424,110 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
         >
           Add-ons
         </h4>
-        {addons.map((addon) => (
-          <label
-            key={addon._id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: 10,
-              cursor: "pointer",
-              fontSize: 15,
-              color: "#444",
-              userSelect: "none",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={selectedAddons.includes(addon._id)}
-              onChange={() =>
-                setSelectedAddons((prev) =>
-                  prev.includes(addon._id)
-                    ? prev.filter((id) => id !== addon._id)
-                    : [...prev, addon._id]
-                )
-              }
+        {addons.map((addon) => {
+          const quantity = selectedAddons[addon._id] ?? 0;
+          return (
+            <div
+              key={addon._id}
               style={{
-                marginRight: 12,
-                cursor: "pointer",
-                minWidth: 18,
-                minHeight: 18,
+                display: "flex",
+                alignItems: "center",
+                marginBottom: 12,
+                fontSize: 15,
+                color: "#444",
+                userSelect: "none",
+                gap: 12,
               }}
-            />
-            {/* Addon image */}
-            <img
-              src={addon.image}
-              alt={addon.name}
-              style={{
-                width: 40,
-                height: 40,
-                objectFit: "cover",
-                borderRadius: 6,
-                marginRight: 12,
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                flexShrink: 0,
-              }}
-            />
-            <span>
-              {addon.name}{" "}
-              <span style={{ color: "#888" }}> (+Rs.{addon.price})</span>
-            </span>
-          </label>
-        ))}
+            >
+              {/* Addon image */}
+              <img
+                src={addon.image}
+                alt={addon.name}
+                style={{
+                  width: 40,
+                  height: 40,
+                  objectFit: "cover",
+                  borderRadius: 6,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  flexShrink: 0,
+                }}
+              />
+
+              {/* Addon Name and price */}
+              <span style={{ flexGrow: 1 }}>
+                {addon.name}{" "}
+                <span style={{ color: "#888" }}> (+Rs.{addon.price})</span>
+              </span>
+
+              {/* Quantity controls */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  backgroundColor: "#f0f4f8",
+                  borderRadius: 6,
+                  padding: "6px 10px",
+                }}
+              >
+                <button
+                  onClick={() => decrementAddon(addon._id)}
+                  aria-label={`Decrease quantity of ${addon.name}`}
+                  style={{
+                    border: "none",
+                    backgroundColor: quantity > 0 ? "#2c3e50" : "#ccc",
+                    color: "white",
+                    cursor: quantity > 0 ? "pointer" : "not-allowed",
+                    borderRadius: 4,
+                    width: 28,
+                    height: 28,
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    lineHeight: 1,
+                    userSelect: "none",
+                    display: "flex", // Add
+                    alignItems: "center", // Add
+                    justifyContent: "center", // Add
+                  }}
+                  disabled={quantity === 0}
+                >
+                  –
+                </button>
+                <span
+                  style={{
+                    minWidth: 20,
+                    textAlign: "center",
+                    fontWeight: "600",
+                  }}
+                >
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => incrementAddon(addon._id)}
+                  aria-label={`Increase quantity of ${addon.name}`}
+                  style={{
+                    border: "none",
+                    backgroundColor: "#2c3e50",
+                    color: "white",
+                    cursor: "pointer",
+                    borderRadius: 4,
+                    width: 28,
+                    height: 28,
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    lineHeight: 1,
+                    userSelect: "none",
+                    display: "flex", // Add
+                    alignItems: "center", // Add
+                    justifyContent: "center", // Add
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </section>
     );
 
@@ -489,7 +575,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
               justifyContent: "center",
               transition: "background-color 0.2s",
             }}
-            onClick={() => dish && removeFromCart(dish)}
+            onClick={decrementQuantity}
             aria-label="Remove one item"
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "#d4d4d4")
@@ -509,7 +595,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
               textAlign: "center",
             }}
           >
-            {quantity}
+            {dishQuantity}
           </span>
           <button
             style={{
@@ -524,7 +610,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
               justifyContent: "center",
               transition: "background-color 0.2s",
             }}
-            onClick={handleAddToCart}
+            onClick={incrementQuantity}
             aria-label="Add one item"
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "#1f2b37")
@@ -562,6 +648,15 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     const availableFromTime = "00:00"; // You can adjust this if you have actual start time.
     const availableFromFormatted = formatTime(availableFromTime);
 
+    const addonsTotalPrice = addons
+      .filter((addon) => (selectedAddons[addon._id] ?? 0) > 0)
+      .reduce(
+        (acc, addon) => acc + addon.price * (selectedAddons[addon._id] ?? 0),
+        0
+      );
+
+    const dishTotalPrice = (Number(dish?.price) || 0) * dishQuantity;
+
     return (
       <section
         className="container"
@@ -575,12 +670,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
         <components.Button
           label={
             isAvailable
-              ? `Add to Cart (Rs.${
-                  dish.price +
-                  addons
-                    .filter((addon) => selectedAddons.includes(addon._id))
-                    .reduce((acc, addon) => acc + addon.price, 0)
-                })`
+              ? `Add to Cart (Rs.${dishTotalPrice + addonsTotalPrice})`
               : `Available from ${availableFromFormatted}`
           }
           onClick={handleAddToCart}

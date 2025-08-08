@@ -90,7 +90,7 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              addToCart(item);
+              addToCart(dishId!, 1, "box", []);
             }}
           >
             <svg.PlusSvg />

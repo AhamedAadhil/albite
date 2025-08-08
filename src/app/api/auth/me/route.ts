@@ -1,6 +1,8 @@
 import { verifyToken } from "@/libs/verifyToken";
+import Cart from "@/models/cart";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/auth/me
@@ -17,12 +19,16 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       );
     }
 
-    const profile = await User.findById(user._id)
+    let profile = await User.findById(user._id)
       .select("-password -totalSpent")
       .populate({
         path: "favourites",
         model: "Dish",
-        select: "-totalOrders -addons",
+        select: "-totalOrders -addons -createdAt -updatedAt",
+      })
+      .populate({
+        path: "cart",
+        model: "Cart",
       });
 
     if (!profile) {
@@ -33,6 +39,29 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
         },
         { status: 404 }
       );
+    }
+
+    // If user has no cart, create a new one and assign it
+    if (!profile.cart) {
+      const newCart = new Cart({
+        user: profile._id,
+        dishes: [],
+        addons: [],
+        total: 0,
+        mainCategory: "lunch", // default mainCategory
+      });
+
+      await newCart.save();
+
+      profile.cart = newCart._id as mongoose.Types.ObjectId;
+
+      await profile.save();
+
+      // Repopulate cart so response includes full cart details
+      await profile.populate({
+        path: "cart",
+        model: "Cart",
+      });
     }
 
     return NextResponse.json(

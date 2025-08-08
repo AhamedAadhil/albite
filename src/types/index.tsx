@@ -13,6 +13,8 @@ import type { PromocodeType } from "./PromocodeType";
 import type { TransactionType } from "./TransactionType";
 import type { NotificationType } from "./NotificationType";
 import type { CartItemType } from "./CartItemType";
+import type { CartResponseType } from "./CartResponseType";
+import type { CartRequestType } from "./CartRequestType";
 
 export type {
   DishType,
@@ -30,4 +32,6 @@ export type {
   TransactionType,
   NotificationType,
   CartItemType,
+  CartResponseType,
+  CartRequestType,
 };

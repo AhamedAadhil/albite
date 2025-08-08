@@ -99,12 +99,10 @@ const userSchema = new Schema<IUser>(
       },
     ],
 
-    cart: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cart",
-      },
-    ],
+    cart: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    },
 
     favourites: [
       {

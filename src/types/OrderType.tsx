@@ -1,3 +1,5 @@
+import { DishType } from "./DishType";
+
 type ProductType = {
   id: number;
   name: string;
@@ -5,7 +7,7 @@ type ProductType = {
   price: number;
 };
 
-type OrderStatus = 'shipping' | 'delivered' | 'canceled';
+type OrderStatus = "shipping" | "delivered" | "canceled";
 
 export type OrderType = {
   id: number;
@@ -16,4 +18,5 @@ export type OrderType = {
   discount: number;
   delivery: number;
   products: ProductType[];
+  addons: DishType[];
 };

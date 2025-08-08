@@ -37,7 +37,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   const {
     list: cart,
     addToCart,
-    removeFromCart,
+    // removeFromCart,
     // clearCart,
   } = stores.useCartStore();
   const {
@@ -46,7 +46,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     removeFromWishlist,
   } = stores.useWishlistStore();
 
-  const quantity = cart.find((item) => item._id === dish?._id)?.quantity ?? 1;
+  // const quantity = cart.find((item) => item._id === dish?._id)?.quantity ?? 1;
   const ifInWishlist = wishlist.find((item) => item._id === dish?._id);
 
   // 🍱 Fetch dish & addons
@@ -132,14 +132,16 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
       console.log("clear cart");
     }
 
-    addToCart({
-      ...dish,
-      _id: dish._id,
-      quantity: dishQuantity,
-      parcelOptions: [parcelType],
+    addToCart(
+      dish._id!,
+      dishQuantity,
+      parcelType,
+      selectedAddons
+
+      // parcelOptions: [parcelType],
       //  selectedAddons,
-      mainCategory: dish.mainCategory,
-    });
+      // mainCategory: dish.mainCategory,
+    );
   };
 
   const renderImage = () => {
@@ -559,7 +561,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
               letterSpacing: 0.3,
             }}
           >
-            Rs.{dish?.price}
+            Rs.{Number(dish?.price ?? 0) * Number(dishQuantity)}
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 15 }}>

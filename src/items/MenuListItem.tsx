@@ -276,7 +276,7 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            addToCart(dish);
+            addToCart(dish._id!, 1, "box", []);
           }}
         >
           <PlusSvg />

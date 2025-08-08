@@ -5,12 +5,14 @@ interface ICart extends Document {
   dishes: {
     dish: mongoose.Types.ObjectId;
     quantity: number;
+    packageType: string;
   }[];
   addons: {
     addon: mongoose.Types.ObjectId;
     quantity: number;
-  };
+  }[];
   total: number;
+  mainCategory: "breakfast" | "lunch" | "dinner";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +35,10 @@ export const cartSchema = new Schema<ICart>(
           type: Number,
           required: true,
         },
+        packageType: {
+          type: String,
+          required: true,
+        },
       },
     ],
     addons: [
@@ -50,6 +56,11 @@ export const cartSchema = new Schema<ICart>(
     ],
     total: {
       type: Number,
+      required: true,
+    },
+    mainCategory: {
+      type: String,
+      enum: ["breakfast", "lunch", "dinner"],
       required: true,
     },
   },

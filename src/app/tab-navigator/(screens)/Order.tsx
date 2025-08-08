@@ -1,41 +1,43 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
-import {svg} from '../../../svg';
-import {items} from '../../../items';
-import {stores} from '../../../stores';
-import {Routes} from '../../../routes';
-import {components} from '../../../components';
+import { svg } from "../../../svg";
+import { items } from "../../../items";
+import { stores } from "../../../stores";
+import { Routes } from "../../../routes";
+import { components } from "../../../components";
 
 export const Order: React.FC = () => {
-  const {list} = stores.useCartStore();
+  const { list } = stores.useCartStore();
+  const { addonsList } = stores.useCartStore();
 
   const renderHeader = () => {
-    return (
-      <components.Header
-        user={true}
-        title='Order'
-        showBasket={true}
-      />
-    );
+    return <components.Header user={true} title="Order" showBasket={true} />;
   };
 
   const renderContent = () => {
+    console.log("addonsList", addonsList);
+
     return (
       <main
-        className='scrollable container'
-        style={{paddingTop: 10, paddingBottom: 10}}
+        className="scrollable container"
+        style={{ paddingTop: 10, paddingBottom: 10 }}
       >
         {/* DISHES */}
-        <section style={{marginBottom: 20}}>
+        <section style={{ marginBottom: 20 }}>
           <ul>
             {list.map((dish, index, array) => {
               const isLast = index === array.length - 1;
+              const addons = addonsList.filter(
+                (addon: any) => addon.addonId.mainCategory === dish.mainCategory
+              );
+
               return (
                 <items.OrderItem
                   dish={dish}
-                  key={dish.id}
+                  addons={addons}
+                  key={dish._id}
                   isLast={isLast}
                 />
               );
@@ -44,76 +46,73 @@ export const Order: React.FC = () => {
         </section>
 
         {/* APPLES PROMOCODE */}
-        <section style={{marginBottom: '10%'}}>
+        <section style={{ marginBottom: "10%" }}>
           <button>
             <svg.ApplyPromocodeSvg />
           </button>
         </section>
 
         {/* SUMMARY */}
-        <section style={{marginBottom: 20}}>
+        <section style={{ marginBottom: 20 }}>
           <div
             style={{
               padding: 20,
               borderRadius: 10,
-              border: '1px solid var(--main-turquoise)',
+              border: "1px solid var(--main-turquoise)",
             }}
           >
             <ul>
               {/* SUBTOTAL */}
               <li
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   marginBottom: 10,
                 }}
               >
                 <span
-                  className='t14'
-                  style={{color: 'var(--main-dark)', fontWeight: 500}}
+                  className="t14"
+                  style={{ color: "var(--main-dark)", fontWeight: 500 }}
                 >
                   Subtotal
                 </span>
-                <span
-                  className='t14'
-                  style={{color: 'var(--main-dark)'}}
-                >
+                <span className="t14" style={{ color: "var(--main-dark)" }}>
                   {/* ${subtotal.toFixed(2)} */}
                 </span>
               </li>
               {/* DISCOUNT */}
               <li
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   marginBottom: 10,
                 }}
               >
-                <span className='t14'>Discount</span>
+                <span className="t14">Discount</span>
                 {/* <span className='t14'>${discount}</span> */}
               </li>
               {/* DELIVERY */}
               <li
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   paddingBottom: 14,
                   marginBottom: 20,
-                  borderBottom: '1px solid #DBE9F5',
+                  borderBottom: "1px solid #DBE9F5",
                 }}
               >
-                <span className='t14'>Delivery</span>
+                <span className="t14">Delivery</span>
                 {/* <span className='t14'>${delivery}</span> */}
               </li>
               {/* TOTAL */}
               <li
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
                 <h4>Total</h4>
@@ -125,10 +124,7 @@ export const Order: React.FC = () => {
 
         {/* BUTTON */}
         <section>
-          <components.Button
-            label='Checkout'
-            href={Routes.CHECKOUT}
-          />
+          <components.Button label="Checkout" href={Routes.CHECKOUT} />
         </section>
       </main>
     );

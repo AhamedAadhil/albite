@@ -11,6 +11,7 @@ export type User = {
   isVerified: boolean;
   token: string;
   favorites: DishType[];
+  cart: any;
   region?: string;
 };
 

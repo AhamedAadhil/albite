@@ -6,6 +6,13 @@ import { CartResponseType } from "../types"; // Assuming types from API
 import { useAuthStore } from "./useAuthStore";
 import toast from "react-hot-toast";
 
+type AddonId = {
+  _id: string;
+  price: number;
+  name?: string;
+  image?: string;
+  // add other properties as needed
+};
 export type CartStateType = {
   total: number;
   delivery: number;
@@ -15,7 +22,7 @@ export type CartStateType = {
   list: CartItemType[];
   addonsList: {
     mainCategory: any;
-    addonId: string;
+    addonId: AddonId;
     quantity: number;
     _id?: string;
   }[];
@@ -65,10 +72,17 @@ export const useCartStore = create<CartStateType>()(
       // Called after fetching cart from API
       setCartFromServer: (cart) => {
         set({
-          list: cart.dishes.map((item: { dish: any; quantity: number }) => ({
-            ...item.dish,
-            quantity: item.quantity,
-          })),
+          list: cart.dishes.map(
+            (item: {
+              packageType?: "box" | "bag";
+              dish: any;
+              quantity: number;
+            }) => ({
+              ...item.dish,
+              quantity: item.quantity,
+              packageType: item.packageType || "box",
+            })
+          ),
           addonsList:
             cart.addons?.map((item: any) => ({
               addonId: item.addon, // depending on how your backend sends it

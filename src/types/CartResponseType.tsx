@@ -10,7 +10,7 @@ export type CartResponseType = {
       // ... other DishType fields
     };
     quantity: number;
-    parcelType?: "box" | "plate";
+    packageType?: "box" | "bag";
     addons?: {
       addon: {
         _id: string;

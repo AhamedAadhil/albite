@@ -19,6 +19,25 @@ export const Order: React.FC = () => {
   const renderContent = () => {
     console.log("addonsList", addonsList);
 
+    const subtotalDishes = list.reduce(
+      (sum, dish) => sum + Number(dish.price) * (dish.quantity ?? 1),
+      0
+    );
+
+    const subtotalAddons = addonsList.reduce((sum, addon) => {
+      // Check if addon.addonId is an object with price property
+      const price =
+        typeof addon.addonId === "object" && addon.addonId !== null
+          ? addon.addonId.price ?? 0
+          : 0;
+
+      return sum + price * (addon.quantity ?? 1);
+    }, 0);
+
+    const discount = 0; // For now no discount
+
+    const total = subtotalDishes + subtotalAddons - discount;
+
     return (
       <main
         className="scrollable container"
@@ -62,7 +81,7 @@ export const Order: React.FC = () => {
             }}
           >
             <ul>
-              {/* SUBTOTAL */}
+              {/* SUBTOTAL DISHES */}
               <li
                 style={{
                   display: "flex",
@@ -75,13 +94,14 @@ export const Order: React.FC = () => {
                   className="t14"
                   style={{ color: "var(--main-dark)", fontWeight: 500 }}
                 >
-                  Subtotal
+                  Dishes Total
                 </span>
                 <span className="t14" style={{ color: "var(--main-dark)" }}>
-                  {/* ${subtotal.toFixed(2)} */}
+                  Rs. {subtotalDishes.toFixed(2)}
                 </span>
               </li>
-              {/* DISCOUNT */}
+
+              {/* SUBTOTAL ADDONS */}
               <li
                 style={{
                   display: "flex",
@@ -90,24 +110,41 @@ export const Order: React.FC = () => {
                   marginBottom: 10,
                 }}
               >
-                <span className="t14">Discount</span>
-                {/* <span className='t14'>${discount}</span> */}
+                <span
+                  className="t14"
+                  style={{ color: "var(--main-dark)", fontWeight: 500 }}
+                >
+                  Add-ons Total
+                </span>
+                <span className="t14" style={{ color: "var(--main-dark)" }}>
+                  Rs. {subtotalAddons.toFixed(2)}
+                </span>
               </li>
-              {/* DELIVERY */}
+
+              {/* DISCOUNT */}
               <li
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  paddingBottom: 14,
                   marginBottom: 20,
-                  borderBottom: "1px solid #DBE9F5",
                 }}
               >
-                <span className="t14">Delivery</span>
-                {/* <span className='t14'>${delivery}</span> */}
+                <span
+                  className="t14"
+                  style={{ color: "var(--main-dark)", fontWeight: 500 }}
+                >
+                  Discount
+                </span>
+                <span className="t14" style={{ color: "var(--main-dark)" }}>
+                  0
+                  {/* Alternatively, you can show text like "No discounts applied" or an icon here */}
+                </span>
               </li>
-              {/* TOTAL */}
+
+              {/* NO DELIVERY FEE here, skip */}
+
+              {/* TOTAL (without delivery) */}
               <li
                 style={{
                   display: "flex",
@@ -115,8 +152,8 @@ export const Order: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <h4>Total</h4>
-                {/* <h4>${total.toFixed(2)}</h4> */}
+                <h5>Total (excluding delivery)</h5>
+                <h5>Rs. {total.toFixed(2)}</h5>
               </li>
             </ul>
           </div>

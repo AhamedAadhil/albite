@@ -7,6 +7,7 @@ import { stores } from "../stores";
 import { dish as dishItem } from "../dish";
 
 import type { DishType } from "../types";
+import { Box } from "lucide-react";
 
 type Props = { dish: DishType; addons: any; isLast: boolean };
 
@@ -41,7 +42,12 @@ const PlusSvg: React.FC = () => {
 };
 
 export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
-  const { addToCart, updateCart } = stores.useCartStore();
+  const { addToCart, updateCart, list } = stores.useCartStore();
+  const dishInCart = list.find((item) => item._id === dish._id);
+
+  console.log(dishInCart, "dishincart");
+
+  console.log(addons);
 
   // Deduplicate addons by addonId and sum quantities
   const mergedAddons = useMemo(() => {
@@ -69,15 +75,17 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
     addToCart(dish._id!, 1, "box", []);
   };
 
-  // Addon quantity handlers - allow decrease to zero (removal)
+  const getAddonId = (a: any) =>
+    typeof a.addonId === "object" ? a.addonId._id : a.addonId;
+
   const decreaseAddonQuantity = (addonId: string, currentQty: number) => {
-    const newAddons = mergedAddons
-      .map((a) =>
-        a.addonId._id === addonId
-          ? { addonId: addonId, quantity: Math.max(0, currentQty - 1) }
-          : { addonId: a.addonId._id, quantity: a.quantity }
-      )
-      .filter((a) => a.quantity > 0); // remove addons with zero qty client side
+    const newAddons = mergedAddons.map((a) => {
+      const id = getAddonId(a);
+      return id === addonId
+        ? { addonId: id, quantity: currentQty - 1 }
+        : { addonId: id, quantity: a.quantity };
+    });
+    // .filter((a) => a.quantity > 0);
 
     updateCart({
       dishes: [],
@@ -86,11 +94,12 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
   };
 
   const increaseAddonQuantity = (addonId: string, currentQty: number) => {
-    const newAddons = mergedAddons.map((a) =>
-      a.addonId._id === addonId
-        ? { addonId: addonId, quantity: currentQty + 1 }
-        : { addonId: a.addonId._id, quantity: a.quantity }
-    );
+    const newAddons = mergedAddons.map((a) => {
+      const id = getAddonId(a);
+      return id === addonId
+        ? { addonId: id, quantity: currentQty + 1 }
+        : { addonId: id, quantity: a.quantity };
+    });
 
     updateCart({
       dishes: [],
@@ -132,7 +141,10 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
             }}
           />
           <div style={{ marginRight: "auto", flex: 1 }}>
-            <dishItem.DishName dish={dish} style={{ marginBottom: 4 }} />
+            <dishItem.DishName
+              dish={dish}
+              style={{ marginBottom: 4, marginTop: 10 }}
+            />
             <span
               style={{
                 marginBottom: 14,
@@ -146,6 +158,24 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
               {dish.description}
             </span>
             <dishItem.DishPrice dish={dish} />
+            {/* Render package type */}
+            <span
+              style={{
+                marginTop: 14,
+                marginBottom: 10,
+                fontWeight: "500",
+                fontSize: "0.9rem",
+                color: "#333",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <span>
+                <Box color="#f9a826" size={13} />
+              </span>
+              <span>Pack in: {dishInCart!.packageType}</span>
+            </span>
           </div>
           <div
             style={{
@@ -197,7 +227,7 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
               <PlusSvg />
             </button>
 
-            {dish.isNew && (
+            {dish.isNewDish && (
               <Image
                 alt="New"
                 width={34}
@@ -206,7 +236,7 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
                 style={{ left: 7, top: 7, position: "absolute" }}
               />
             )}
-            {dish.isHot && (
+            {/* {dish.isHot && (
               <Image
                 src={"/assets/icons/15.png"}
                 priority={true}
@@ -215,12 +245,12 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
                 height={24}
                 style={{ left: 7, top: 7, position: "absolute" }}
               />
-            )}
+            )} */}
           </div>
         </Link>
       </li>
 
-      {mergedAddons.length > 0 && (
+      {isLast && mergedAddons.length > 0 && (
         <div style={{ marginTop: 24 }}>
           <h3
             style={{

@@ -23,18 +23,18 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     const { dishId, dishQuantity, packageType, addons, userId } =
       await req.json();
 
-    console.log(
-      "dishId=",
-      dishId,
-      "dishQuantity=",
-      dishQuantity,
-      "packageType=",
-      packageType,
-      "addons=",
-      addons,
-      "userId=",
-      userId
-    );
+    // console.log(
+    //   "dishId=",
+    //   dishId,
+    //   "dishQuantity=",
+    //   dishQuantity,
+    //   "packageType=",
+    //   packageType,
+    //   "addons=",
+    //   addons,
+    //   "userId=",
+    //   userId
+    // );
 
     if (!packageType) {
       return NextResponse.json(
@@ -202,6 +202,8 @@ export const PATCH = async (req: NextRequest) => {
     await connectDB();
 
     const { userId, dishes = [], addons = [] } = await req.json();
+
+    console.log(userId, dishes, addons);
 
     if (userId.toString() !== user._id.toString()) {
       return NextResponse.json(

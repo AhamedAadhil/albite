@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import PuffLoader from "react-spinners/PuffLoader";
 import { useRouter } from "next/navigation";
 
@@ -149,7 +150,13 @@ export const Home: React.FC = () => {
           slidesPerView={"auto"}
           pagination={{ clickable: true }}
           navigation={true}
-          mousewheel={true}
+          // mousewheel={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          autoplay={{
+            delay: 3000, // 3000ms = 3 seconds
+            disableOnInteraction: false, // continue autoplay after user interactions
+            pauseOnMouseEnter: true, // optional: pause on hover
+          }}
           onSlideChange={handleSlideChange}
         >
           {carousel.map((item) => (

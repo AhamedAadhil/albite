@@ -2,7 +2,6 @@
 
 import React from "react";
 
-import { svg } from "../../../svg";
 import { items } from "../../../items";
 import { stores } from "../../../stores";
 import { Routes } from "../../../routes";
@@ -34,7 +33,7 @@ export const Order: React.FC = () => {
       return sum + price * (addon.quantity ?? 1);
     }, 0);
 
-    const discount = 0; // For now no discount
+    const discount = 0; // If points translate 1:1 to discount amount
 
     const total = subtotalDishes + subtotalAddons - discount;
 
@@ -65,11 +64,11 @@ export const Order: React.FC = () => {
         </section>
 
         {/* APPLES PROMOCODE */}
-        <section style={{ marginBottom: "10%" }}>
+        {/* <section style={{ marginBottom: "10%" }}>
           <button>
             <svg.ApplyPromocodeSvg />
           </button>
-        </section>
+        </section> */}
 
         {/* SUMMARY */}
         <section style={{ marginBottom: 20 }}>
@@ -102,24 +101,26 @@ export const Order: React.FC = () => {
               </li>
 
               {/* SUBTOTAL ADDONS */}
-              <li
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <span
-                  className="t14"
-                  style={{ color: "var(--main-dark)", fontWeight: 500 }}
+              {subtotalAddons > 0 && (
+                <li
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
                 >
-                  Add-ons Total
-                </span>
-                <span className="t14" style={{ color: "var(--main-dark)" }}>
-                  Rs. {subtotalAddons.toFixed(2)}
-                </span>
-              </li>
+                  <span
+                    className="t14"
+                    style={{ color: "var(--main-dark)", fontWeight: 500 }}
+                  >
+                    Add-ons Total
+                  </span>
+                  <span className="t14" style={{ color: "var(--main-dark)" }}>
+                    Rs. {subtotalAddons.toFixed(2)}
+                  </span>
+                </li>
+              )}
 
               {/* DISCOUNT */}
               <li
@@ -137,8 +138,7 @@ export const Order: React.FC = () => {
                   Discount
                 </span>
                 <span className="t14" style={{ color: "var(--main-dark)" }}>
-                  0
-                  {/* Alternatively, you can show text like "No discounts applied" or an icon here */}
+                  Rs. {discount.toFixed(2)}
                 </span>
               </li>
 

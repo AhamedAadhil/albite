@@ -7,6 +7,7 @@ import { Routes } from "../routes";
 import { stores } from "../stores";
 import { DishType } from "../types";
 import { BabyIcon, UserIcon } from "lucide-react";
+import { isAvailableNow } from "@/libs/isAvailableNow";
 
 type Props = {
   dish: DishType;
@@ -38,6 +39,7 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
 
   const qty = cart.find((item) => item._id === dish._id)?.quantity ?? 0;
   const ifInWishlist = wishlist.find((item) => item._id === dish._id);
+  const isAvailable = isAvailableNow(dish.availableBefore);
 
   return (
     <li
@@ -282,6 +284,27 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
           <PlusSvg />
         </button>
       )}
+
+      {/* Unavailable Badge */}
+      {/* {qty === 0 && !isAvailable && (
+        <div
+          style={{
+            position: "absolute",
+            right: "8px",
+            bottom: "8px",
+            padding: "4px 10px",
+            borderRadius: "9999px", // pill shape
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            color: "#fff",
+            fontSize: "0.75rem",
+            fontWeight: 500,
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+            letterSpacing: "0.3px",
+          }}
+        >
+          Unavailable
+        </div>
+      )} */}
     </li>
   );
 };

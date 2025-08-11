@@ -1,58 +1,52 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
-import {URLS} from '../../config';
-import {Routes} from '../../routes';
-import {components} from '../../components';
+import { URLS } from "../../config";
+import { Routes } from "../../routes";
+import { components } from "../../components";
 
 export const OrderSuccessful: React.FC = () => {
   const renderContent = () => {
     return (
-      <main
-        className='scrollable container'
-        style={{paddingTop: 10}}
-      >
+      <main className="scrollable container" style={{ paddingTop: 10 }}>
         <section
           style={{
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             borderRadius: 10,
-            placeItems: 'center',
-            flexDirection: 'column',
-            backgroundColor: 'var(--white-color)',
+            placeItems: "center",
+            flexDirection: "column",
+            backgroundColor: "var(--white-color)",
           }}
         >
           <Image
             src={`${URLS.MAIN_URL}/assets/images/03.jpg`}
-            alt='profile'
+            alt="profile"
             width={0}
             height={0}
-            sizes='100vw'
+            sizes="100vw"
             style={{
-              width: '70%',
-              height: 'auto',
-              marginLeft: 'auto',
-              marginRight: 'auto',
+              width: "70%",
+              height: "auto",
+              marginLeft: "auto",
+              marginRight: "auto",
               marginBottom: 14,
             }}
           />
           <h2
             style={{
-              textAlign: 'center',
+              textAlign: "center",
               marginBottom: 14,
-              textTransform: 'capitalize',
+              textTransform: "capitalize",
             }}
           >
             Thank you for <br /> your order!
           </h2>
-          <p
-            style={{textAlign: 'center'}}
-            className='t16'
-          >
+          <p style={{ textAlign: "center" }} className="t16">
             Your order will be delivered on time. <br /> Thank you!
           </p>
         </section>
@@ -62,16 +56,16 @@ export const OrderSuccessful: React.FC = () => {
 
   const renderButtons = () => {
     return (
-      <section style={{padding: 20}}>
+      <section style={{ padding: 20 }}>
         <components.Button
-          label='Continue Shopping'
+          label="Continue Shopping"
           href={`${Routes.MENU_LIST}/all`}
-          containerStyle={{marginBottom: 14}}
+          containerStyle={{ marginBottom: 14 }}
         />
         <components.Button
           href={Routes.ORDER_HISTORY}
-          label='View orders'
-          colorScheme='secondary'
+          label="View orders"
+          colorScheme="secondary"
         />
       </section>
     );

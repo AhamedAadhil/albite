@@ -31,7 +31,7 @@ export const Header: React.FC<Props> = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  const { total } = stores.useCartStore();
+  const { total, list } = stores.useCartStore();
   const { setScreen } = stores.useTabStore();
   const { openModal } = stores.useModalStore();
 
@@ -145,7 +145,7 @@ export const Header: React.FC<Props> = ({
               fontSize: 10,
             }}
           >
-            Rs.{total > 0 ? total.toFixed(2) : "0"}
+            Rs.{total > 0 && list.length > 0 ? total.toFixed(2) : "0"}
           </span>
         </div>
         <svg.HeaderBasketSvg />

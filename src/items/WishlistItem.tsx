@@ -92,7 +92,7 @@ export const WishlistItem: React.FC<Props> = ({ dish }) => {
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              addToCart(dish);
+              addToCart(dish._id!, 1, "box", []);
             }}
             style={{
               position: "absolute",

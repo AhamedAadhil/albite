@@ -9,6 +9,8 @@ import { components } from "../../../components";
 import { DishType } from "@/types";
 import { UserIcon, BabyIcon } from "lucide-react";
 import { renderLoader } from "@/components/Loader";
+import { isAvailableNow } from "@/libs/isAvailableNow";
+import toast from "react-hot-toast";
 
 type Props = {
   menuItemId: string;
@@ -29,7 +31,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   const [addons, setAddons] = useState<AddOn[]>([]);
   const [loading, setLoading] = useState(true);
   const [parcelType, setParcelType] = useState<"box" | "bag">("box");
-  // Instead of string array, use a map of addonId to quantity
+  const [showPreOrderModal, setShowPreOrderModal] = useState(false);
   const [selectedAddons, setSelectedAddons] = useState<{
     [addonId: string]: number;
   }>({});
@@ -48,6 +50,11 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
 
   // const quantity = cart.find((item) => item._id === dish?._id)?.quantity ?? 1;
   const ifInWishlist = wishlist.find((item) => item._id === dish?._id);
+
+  // Compute if dish is available now
+  const availableNow = isAvailableNow(dish?.availableBefore);
+  const canOrderNow = dish?.isActive && availableNow;
+  const canPreOrder = dish?.isActive && !availableNow;
 
   // 🍱 Fetch dish & addons
   useEffect(() => {
@@ -73,14 +80,14 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   }, [menuItemId]);
 
   // ⏰ Dish availability logic
-  const isDishAvailable = (dish: DishType | null): boolean => {
-    if (!dish || !dish.isActive) return false;
-    const now = new Date();
-    const [hour, minute] = dish.availableBefore.split(":").map(Number);
-    const availableUntil = new Date();
-    availableUntil.setHours(hour, minute, 0, 0);
-    return now < availableUntil;
-  };
+  // const isDishAvailable = (dish: DishType | null): boolean => {
+  //   if (!dish || !dish.isActive) return false;
+  //   const now = new Date();
+  //   const [hour, minute] = dish.availableBefore.split(":").map(Number);
+  //   const availableUntil = new Date();
+  //   availableUntil.setHours(hour, minute, 0, 0);
+  //   return now < availableUntil;
+  // };
 
   const incrementAddon = (id: string) => {
     setSelectedAddons((prev) => ({
@@ -112,8 +119,13 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
   const handleAddToCart = () => {
     if (!dish) return;
 
-    if (!isDishAvailable(dish)) {
-      alert("This dish is not available at this time.");
+    // if (!isDishAvailable(dish)) {
+    //   toast.error("This dish is not available at this time.");
+    //   return;
+    // }
+
+    if (!dish.isActive) {
+      toast.error("This dish is not available at this time.");
       return;
     }
 
@@ -132,16 +144,28 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
       console.log("clear cart");
     }
 
-    addToCart(
-      dish._id!,
-      dishQuantity,
-      parcelType,
-      selectedAddons
+    // addToCart(dish._id!, dishQuantity, parcelType, selectedAddons);
+    if (availableNow) {
+      // existing logic to add to cart directly, checking cart category conflict
+      // ... your existing confirmation logic here
+      addToCart(dish._id!, dishQuantity, parcelType, selectedAddons);
+    } else {
+      // Show pre-order modal instead of immediate add
+      setShowPreOrderModal(true);
+    }
+  };
 
-      // parcelOptions: [parcelType],
-      //  selectedAddons,
-      // mainCategory: dish.mainCategory,
-    );
+  const confirmPreOrder = () => {
+    if (!dish) return;
+
+    // you may want to include your existing cart conflict confirmation here
+    addToCart(dish._id!, dishQuantity, parcelType, selectedAddons);
+
+    setShowPreOrderModal(false);
+  };
+
+  const cancelPreOrder = () => {
+    setShowPreOrderModal(false);
   };
 
   const renderImage = () => {
@@ -519,9 +543,9 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
                     fontSize: 18,
                     lineHeight: 1,
                     userSelect: "none",
-                    display: "flex", // Add
-                    alignItems: "center", // Add
-                    justifyContent: "center", // Add
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   +
@@ -628,14 +652,14 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     </section>
   );
 
-  const formatTime = (timeStr: string) => {
-    const [hour, minute] = timeStr.split(":").map(Number);
-    // Format to 12-hour am/pm format (optional)
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const hr12 = hour % 12 === 0 ? 12 : hour % 12;
-    const paddedMinute = minute.toString().padStart(2, "0");
-    return `${hr12}:${paddedMinute} ${ampm}`;
-  };
+  // const formatTime = (timeStr: string) => {
+  //   const [hour, minute] = timeStr.split(":").map(Number);
+  //   // Format to 12-hour am/pm format (optional)
+  //   const ampm = hour >= 12 ? "PM" : "AM";
+  //   const hr12 = hour % 12 === 0 ? 12 : hour % 12;
+  //   const paddedMinute = minute.toString().padStart(2, "0");
+  //   return `${hr12}:${paddedMinute} ${ampm}`;
+  // };
 
   const renderActions = () => {
     if (!dish) return null;
@@ -644,11 +668,11 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     const availableUntil = new Date();
     availableUntil.setHours(hour, minute, 0, 0);
 
-    const isAvailable = isDishAvailable(dish);
+    // const isAvailable = isDishAvailable(dish);
 
-    // Assuming availableFrom is midnight 00:00
-    const availableFromTime = "00:00"; // You can adjust this if you have actual start time.
-    const availableFromFormatted = formatTime(availableFromTime);
+    // // Assuming availableFrom is midnight 00:00
+    // const availableFromTime = "00:00"; // You can adjust this if you have actual start time.
+    // const availableFromFormatted = formatTime(availableFromTime);
 
     const addonsTotalPrice = addons
       .filter((addon) => (selectedAddons[addon._id] ?? 0) > 0)
@@ -658,6 +682,10 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
       );
 
     const dishTotalPrice = (Number(dish?.price) || 0) * dishQuantity;
+
+    const buttonLabel = canOrderNow
+      ? `Add to Cart (Rs.${dishTotalPrice + addonsTotalPrice})`
+      : `Pre-order for tomorrow (Rs.${dishTotalPrice + addonsTotalPrice})`;
 
     return (
       <section
@@ -669,14 +697,50 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
           paddingRight: 10,
         }}
       >
+        {/* CAN PREORDER TEXT */}
+        {canPreOrder && (
+          <div
+            role="alert"
+            aria-live="polite"
+            style={{
+              marginTop: 12,
+              marginBottom: 12,
+              padding: "10px 16px",
+              backgroundColor: "#FFF4E5", // light warm color (soft yellow/orange)
+              color: "#663C00", // dark text that matches your recommended badge
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: "600",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              userSelect: "none",
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="#663C00"
+              style={{ width: 20, height: 20, flexShrink: 0 }}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 16h-1v-4h-1m1-4h.01M12 8v.01"
+              />
+            </svg>
+            This dish is sold out for today — ordering now will be prepared
+            tomorrow.
+          </div>
+        )}
         <components.Button
-          label={
-            isAvailable
-              ? `Add to Cart (Rs.${dishTotalPrice + addonsTotalPrice})`
-              : `Available from ${availableFromFormatted}`
-          }
+          label={buttonLabel}
           onClick={handleAddToCart}
-          disabled={!isAvailable}
+          disabled={!dish?.isActive}
           containerStyle={{
             marginBottom: 14,
             width: "100%",
@@ -685,6 +749,72 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
             borderRadius: 12,
           }}
         />
+
+        {/* PREORDER MODAL */}
+        {showPreOrderModal && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            style={{
+              position: "fixed",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.45)",
+              zIndex: 2000,
+            }}
+            onClick={cancelPreOrder} // Clicking outside closes modal
+          >
+            <div
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+              style={{
+                width: "90%",
+                maxWidth: 420,
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 12,
+                boxShadow: "0 8px 30px rgba(0,0,0,0.25)",
+              }}
+            >
+              <h3>Pre-order for tomorrow</h3>
+              <p style={{ color: "#444", marginBottom: 18 }}>
+                This dish is not available for immediate preparation. If you
+                proceed, your order will be prepared for tomorrow. Do you want
+                to continue?
+              </p>
+              <div
+                style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}
+              >
+                <button
+                  onClick={cancelPreOrder}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: 8,
+                    border: "1px solid #ccc",
+                    backgroundColor: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmPreOrder}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: 8,
+                    border: "none",
+                    backgroundColor: "#2c3e50",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Confirm Pre-order
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <components.Button
           label="Reviews"

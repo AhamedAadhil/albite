@@ -47,6 +47,14 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       );
     }
 
+    // 3.1 Check if Account Disabled
+    if (!user.isActive) {
+      return NextResponse.json(
+        { success: false, message: "Account is disabled, contact support." },
+        { status: 403 }
+      );
+    }
+
     // 4. Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {

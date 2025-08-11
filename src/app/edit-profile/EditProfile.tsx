@@ -6,7 +6,13 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import getInitials from "@/libs/getInitials";
 import toast from "react-hot-toast";
 
-const regions = ["Western", "Central", "Northern", "Eastern", "Southern"];
+const regions = [
+  "Akkaraipattu",
+  "Palamunai",
+  "Addalaichenai",
+  "Sagamam",
+  "Kudiyiruppu",
+];
 
 export const EditProfile: React.FC = () => {
   const user = useAuthStore((state) => state.user);

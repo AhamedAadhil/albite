@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Routes } from "../../routes";
 import { stores } from "../../stores";
@@ -8,19 +9,32 @@ import { components } from "../../components";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Gift, User, Mail, Phone, MapPin } from "lucide-react";
+import toast from "react-hot-toast";
+import { fetchUserProfile } from "@/libs/getUserProfile";
+import InfoPopup from "@/components/OrderInfo";
 
 export const Checkout: React.FC = () => {
-  const { total, discount, delivery, list, addonsList } = stores.useCartStore();
-
+  const { total, list, addonsList, resetCart } = stores.useCartStore();
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const updateUser = useAuthStore((state) => state.updateUser);
+  let deliveryFee = 0;
 
-  // Prepare regions list (example)
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+
   // TODO:change region
-  const regions = ["North", "South", "Eastern", "West", "Central"];
+  const regions = [
+    "Akkaraipattu",
+    "Palamunai",
+    "Addalaichenai",
+    "Sagamam",
+    "Kudiyiruppu",
+  ];
   // Use user.region or default to first option
   const [selectedRegion, setSelectedRegion] = React.useState(
     user?.region ?? regions[0]
   );
+  const [usePoints, setUsePoints] = React.useState(0);
   const [deliveryNote, setDeliveryNote] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -34,6 +48,8 @@ export const Checkout: React.FC = () => {
     "delivery" | "takeaway"
   >("delivery");
 
+  const [loading, setLoading] = useState(false);
+
   // const totalAddons = addonsList.reduce((sum, addon) => {
   //   const price =
   //     typeof addon.addonId === "object" && addon.addonId !== null
@@ -43,22 +59,123 @@ export const Checkout: React.FC = () => {
   // }, 0);
 
   // Calculate points earned from the order
-  const orderAmountForPoints = total ?? 0; // or subtotal without delivery/discount if you prefer
+  // TODO:recalculate loyalty points math
+  const orderAmountForPoints = total - usePoints; // or subtotal without delivery/discount if you prefer
   const pointsEarned = Math.floor(
     orderAmountForPoints * Number(process.env.NEXT_PUBLIC_POINTS_PER_RUPEE)!
   );
 
-  const [usePoints, setUsePoints] = React.useState(0);
-
   const maxPoints = user?.points ?? 0;
-  // For example, 1 point = Rs. 1 discount
-  const pointsValue = usePoints;
 
   const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = Number(e.target.value);
     if (val > maxPoints) val = maxPoints;
     if (val < 0) val = 0;
     setUsePoints(val);
+  };
+
+  const handleDeliveryCost = (
+    selectedRegion: string,
+    deliveryOption: string
+  ) => {
+    if (deliveryOption === "delivery") {
+      if (selectedRegion === "Akkaraipattu") {
+        deliveryFee = Number(process.env.NEXT_PUBLIC_AKKARAIPATTU_FEE);
+      } else if (selectedRegion === "Palamunai") {
+        deliveryFee = Number(process.env.NEXT_PUBLIC_PALAMUNAI_FEE);
+      } else if (selectedRegion === "Addalaichenai") {
+        deliveryFee = Number(process.env.NEXT_PUBLIC_ADDALAICHENAI_FEE);
+      } else if (selectedRegion === "Sagamam") {
+        deliveryFee = Number(process.env.NEXT_PUBLIC_SAGAMAM_FEE);
+      } else if (selectedRegion === "Kudiyiruppu") {
+        deliveryFee = Number(process.env.NEXT_PUBLIC_KUDIYIRUPPU_FEE);
+      } else {
+        deliveryFee = 400;
+      }
+    } else {
+      deliveryFee = 0;
+    }
+    return deliveryFee;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      if (!user) {
+        console.warn("No user logged in");
+        setLoading(false);
+        return;
+      }
+
+      const orderedDishes = list.map((dish) => ({
+        dish: dish._id,
+        packageType: dish.packageType,
+        quantity: dish.quantity,
+      }));
+
+      const orderedAddons = addonsList.map((addon) => {
+        const addonId =
+          typeof addon.addonId === "object" && addon.addonId !== null
+            ? addon.addonId._id
+            : addon.addonId;
+
+        return {
+          addon: addonId,
+          quantity: addon.quantity,
+        };
+      });
+
+      // Prepare order info object
+      const orderInfo = {
+        userId: user._id,
+        deliveryRegion: selectedRegion,
+        deliveryMethod: deliveryOption,
+        deliveryNote,
+        usedPoints: usePoints,
+        dishes: orderedDishes,
+        addons: orderedAddons,
+        totalAmount: total,
+        discount: usePoints,
+        deliveryCharge: handleDeliveryCost,
+      };
+
+      const res = await fetch("/api/checkout", {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderInfo),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setLoading(false);
+        toast.success(data.message || "Order submitted successfully!");
+        resetCart();
+        const fullProfile = await fetchUserProfile();
+        if (fullProfile) {
+          updateUser(fullProfile); // this will merge fields like region, etc.
+        }
+
+        router.push(Routes.ORDER_SUCCESSFUL);
+      } else {
+        setLoading(false);
+        if (data.info) {
+          setInfoMessage(data.message);
+        } else {
+          toast.error(data.message || "Failed to submit order.");
+        }
+      }
+
+      // You can move from console.log to actual submit logic here
+
+      // For now, just alert success for testing
+      //  alert("Order info logged to console");
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      setLoading(false);
+    }
   };
 
   const renderHeader = () => {
@@ -135,53 +252,55 @@ export const Checkout: React.FC = () => {
             Use Loyalty Points ({maxPoints} available)
           </div>
 
-          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <input
-              type="number"
-              min={0}
-              max={maxPoints}
-              value={usePoints}
-              onChange={handlePointsChange}
-              style={{
-                flex: 1, // input takes remaining space
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid var(--border-color)",
-                fontSize: "1rem",
-                boxSizing: "border-box",
-              }}
-              placeholder="Enter points to use"
-            />
+          <input
+            type="number"
+            min={0}
+            max={maxPoints}
+            value={usePoints}
+            onChange={handlePointsChange}
+            style={{
+              width: "100%",
+              padding: 12,
+              borderRadius: 8,
+              border:
+                usePoints > 0
+                  ? "2px solid var(--main-turquoise)"
+                  : "1px solid var(--border-color)",
+              fontSize: "1rem",
+              boxSizing: "border-box",
+              fontWeight: 600,
+              color:
+                usePoints > 0
+                  ? "var(--main-turquoise)"
+                  : "var(--text-muted-color)",
+              transition: "border-color 0.3s ease, color 0.3s ease",
+              outline: "none",
+            }}
+            placeholder="Enter points to use"
+          />
 
-            <button
-              className="t12"
+          {usePoints > 0 ? (
+            <div
               style={{
-                flexShrink: 0,
-                padding: "12px 20px",
-                backgroundColor:
-                  usePoints > 0
-                    ? "var(--main-turquoise)"
-                    : "var(--border-color)",
-                color:
-                  usePoints > 0
-                    ? "var(--white-color)"
-                    : "var(--text-muted-color)",
-                border: "none",
-                borderRadius: 6,
+                marginTop: 8,
+                fontSize: "0.9rem",
+                color: "var(--main-turquoise)",
                 fontWeight: 600,
-                cursor: usePoints > 0 ? "pointer" : "not-allowed",
-                transition: "background-color 0.3s ease",
-                whiteSpace: "nowrap",
-              }}
-              disabled={usePoints === 0}
-              onClick={() => {
-                // TODO: handle points application logic here
-                alert(`Applied ${usePoints} loyalty points!`);
               }}
             >
-              Apply Points
-            </button>
-          </div>
+              {`Hooray! You saved Rs. ${usePoints}`}
+            </div>
+          ) : (
+            <div
+              style={{
+                marginTop: 8,
+                fontSize: "0.9rem",
+                color: "var(--text-muted-color)",
+              }}
+            >
+              Enter points to apply automatically.
+            </div>
+          )}
         </section>
 
         {/* SUMMARY */}
@@ -287,9 +406,9 @@ export const Checkout: React.FC = () => {
             }}
           >
             <span className="t14" style={{ fontWeight: 600 }}>
-              Discount
+              Albite Loyalty Discount
             </span>
-            <span className="t14">- Rs. {discount?.toFixed(2)}</span>
+            <span className="t14">- Rs. {usePoints?.toFixed(2)}</span>
           </div>
 
           {/* Delivery Charge */}
@@ -303,7 +422,10 @@ export const Checkout: React.FC = () => {
             <span className="t14" style={{ fontWeight: 600 }}>
               Delivery
             </span>
-            <span className="t14">Rs. {delivery?.toFixed(2)}</span>
+            {/* <span className="t14">Rs. {delivery?.toFixed(2)}</span> */}
+            <span className="t14">
+              Rs.{handleDeliveryCost(selectedRegion, deliveryOption)}
+            </span>
           </div>
 
           {/* Total */}
@@ -317,7 +439,8 @@ export const Checkout: React.FC = () => {
             }}
           >
             <h4>Total</h4>
-            <h4>Rs. {total?.toFixed(2)}</h4>
+            {/* <h4>Rs. {total?.toFixed(2)}</h4> */}
+            <h4>Rs. {(total + deliveryFee - usePoints).toFixed(2)}</h4>
           </div>
 
           {/* Points Earned */}
@@ -684,9 +807,16 @@ export const Checkout: React.FC = () => {
     return (
       <section style={{ padding: 20 }}>
         <components.Button
-          label="Confirm order"
-          href={Routes.ORDER_SUCCESSFUL}
+          label={loading ? "Confirming..." : "Confirm order"}
+          disabled={loading}
+          onClick={handleSubmit}
         />
+        {infoMessage && (
+          <InfoPopup
+            message={infoMessage}
+            onClose={() => setInfoMessage(null)}
+          />
+        )}
       </section>
     );
   };

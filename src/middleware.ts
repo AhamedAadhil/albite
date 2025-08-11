@@ -8,6 +8,10 @@ const PROTECTED_ROUTES = [
   "/order-history",
   "/order-history-empty",
   "/api/auth/me",
+  "/checkout",
+  "/menu-list/:category",
+  "/menu-item/:id",
+  "/order-successful",
 ];
 
 const getJwtSecret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -54,5 +58,9 @@ export const config = {
     "/order-history",
     "/order-history-empty",
     "/api/auth/me",
+    "/checkout",
+    "/menu-list/:category",
+    "/menu-item/:id",
+    "/order-successful",
   ],
 };

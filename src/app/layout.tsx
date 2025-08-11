@@ -31,6 +31,7 @@ export default function RootLayout({
         className={`${dmSans.variable}`}
         style={{ backgroundColor: "#F6F9F9" }}
       >
+        {/* <NoInternetBanner /> */}
         <Toaster position="top-center" reverseOrder={false} />
         {children}
       </body>

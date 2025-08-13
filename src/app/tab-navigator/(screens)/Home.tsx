@@ -80,8 +80,8 @@ export const Home: React.FC = () => {
                     }}
                   >
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={item.image || "/placeholder/placeholder_dish.png"}
+                      alt={item.name || "Albite Recomended Dish"}
                       fill
                       sizes="(max-width: 768px) 40vw, 20vw"
                       priority

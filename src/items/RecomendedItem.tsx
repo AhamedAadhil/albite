@@ -39,8 +39,8 @@ export const RecommendedItem: React.FC<Props> = ({ item }) => {
       }}
     >
       <Image
-        src={item.image}
-        alt="Dish"
+        src={item.image || "/placeholder/placeholder_dish.png"}
+        alt={item.name || "Albite Dish"}
         width={0}
         height={0}
         sizes="100vw"

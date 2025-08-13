@@ -32,7 +32,7 @@ export const WishlistItem: React.FC<Props> = ({ dish }) => {
     >
       <Link href={`${Routes.MENU_ITEM}/${dish._id}`}>
         <Image
-          src={dish.image}
+          src={dish.image || "/placeholder/placeholder_dish.png"}
           alt={"dish"}
           width={0}
           height={0}

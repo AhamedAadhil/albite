@@ -39,7 +39,6 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
 
   const qty = cart.find((item) => item._id === dish._id)?.quantity ?? 0;
   const ifInWishlist = wishlist.find((item) => item._id === dish._id);
-  const isAvailable = isAvailableNow(dish.availableBefore);
 
   return (
     <li
@@ -55,7 +54,7 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
     >
       <Link href={`${Routes.MENU_ITEM}/${dish._id}`}>
         <Image
-          src={dish.image}
+          src={dish.image || "/placeholder/placeholder_dish.png"}
           alt={dish.name}
           width={0}
           height={0}

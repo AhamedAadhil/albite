@@ -50,8 +50,8 @@ export const Menu: React.FC = () => {
                       }}
                     >
                       <Image
-                        src={item.image}
-                        alt={item.name}
+                        src={item.image || "/placeholder/placeholder_dish.png"}
+                        alt={item.name || "Albite Dish"}
                         fill
                         sizes="(max-width: 768px) 45vw, 20vw"
                         priority

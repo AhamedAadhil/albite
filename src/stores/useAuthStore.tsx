@@ -10,6 +10,7 @@ export type User = {
   mobile: string;
   role: number;
   isVerified: boolean;
+  totalSpent: Number;
   token: string;
   favorites: DishType[];
   cart: any;

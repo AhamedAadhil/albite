@@ -126,8 +126,8 @@ export const OrderItem: React.FC<Props> = ({ dish, addons, isLast }) => {
           }}
         >
           <Image
-            src={dish.image}
-            alt="dish"
+            src={dish.image || "/placeholder/placeholder_dish.png"}
+            alt={dish.name || "Albite dish"}
             width={0}
             height={0}
             sizes="100vw"

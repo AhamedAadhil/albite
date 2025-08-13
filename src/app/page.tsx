@@ -1,14 +1,23 @@
-import React from "react";
-import type { Metadata } from "next";
+"use client";
+
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { Onboarding } from "./Onboarding";
-
-export const metadata: Metadata = {
-  title: "Onboarding",
-  description:
-    "Welcome to the onboarding page. Start your journey with us and explore the features we offer.",
-};
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Start() {
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  useEffect(() => {
+    if (user) {
+      router.replace("/tab-navigator");
+    }
+  }, [user, router]);
+
+  // If user exists, we don't render anything because the redirect will happen
+  if (user) {
+    return null;
+  }
   return <Onboarding />;
 }

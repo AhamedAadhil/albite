@@ -184,8 +184,8 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
       >
         {/* Main Dish Image */}
         <Image
-          src={dish?.image ?? ""}
-          alt={dish?.name ?? "Dish"}
+          src={dish?.image || "/placeholder/placeholder_dish.png"}
+          alt={dish?.name ?? "Albite Dish"}
           width={500}
           height={0}
           sizes="100vw"

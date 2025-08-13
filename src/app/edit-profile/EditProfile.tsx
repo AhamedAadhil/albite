@@ -22,7 +22,6 @@ export const EditProfile: React.FC = () => {
   const [region, setRegion] = useState("");
   const [password, setPassword] = useState("");
 
-  // Fetch full profile from /api/me when mounted
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -41,7 +40,6 @@ export const EditProfile: React.FC = () => {
     fetchProfile();
   }, []);
 
-  // Pre-fill form when user is available/updated
   useEffect(() => {
     if (user) {
       setUsername(user.name || "");
@@ -82,6 +80,7 @@ export const EditProfile: React.FC = () => {
             paddingTop: 50,
             paddingBottom: 30,
             marginTop: 10,
+            boxSizing: "border-box",
           }}
         >
           {/* Initials Circle */}
@@ -89,7 +88,8 @@ export const EditProfile: React.FC = () => {
             style={{
               position: "relative",
               maxWidth: 100,
-              margin: "0 auto 30px auto",
+              margin: "0 auto 20px auto",
+              display: "block",
             }}
             className="center clickable"
           >
@@ -106,9 +106,40 @@ export const EditProfile: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 textTransform: "uppercase",
+                userSelect: "none",
               }}
             >
               {getInitials(user?.name || "User")}
+            </div>
+          </div>
+
+          {/* User Stats - totalSpent and points */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 40,
+              marginBottom: 30,
+              fontWeight: 600,
+              color: "var(--main-dark)",
+            }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
+                Rs. {user?.totalSpent?.toFixed(2) || "0"}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
+                Total Spent
+              </div>
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
+                {user?.points || 0}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
+                Albite Loyalty Points
+              </div>
             </div>
           </div>
 

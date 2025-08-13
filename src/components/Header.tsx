@@ -10,6 +10,7 @@ import { TabScreens } from "../routes";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import getInitials from "@/libs/getInitials";
+import { Home } from "lucide-react";
 
 type Props = {
   user?: boolean;
@@ -18,11 +19,13 @@ type Props = {
   document?: boolean;
   creditCard?: boolean;
   showGoBack?: boolean;
+  showHome?: boolean;
   showBasket?: boolean;
 };
 
 export const Header: React.FC<Props> = ({
   showGoBack,
+  showHome,
   title,
   user,
   userName,
@@ -45,6 +48,18 @@ export const Header: React.FC<Props> = ({
         style={{ left: "0px", padding: "0 20px", position: "absolute" }}
       >
         <svg.GoBackSvg />
+      </button>
+    );
+  };
+
+  const renderGoHome = () => {
+    if (!showHome) return null;
+    return (
+      <button
+        onClick={() => router.push(Routes.TAB_NAVIGATOR)}
+        style={{ left: "20px", padding: "0 20px", position: "absolute" }}
+      >
+        <Home size={20} color="black" />
       </button>
     );
   };
@@ -166,6 +181,7 @@ export const Header: React.FC<Props> = ({
         }}
       >
         {renderGoBack()}
+        {renderGoHome()}
         {renderUser()}
         {renderTitle()}
         {renderBasket()}

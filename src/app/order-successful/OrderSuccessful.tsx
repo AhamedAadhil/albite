@@ -58,8 +58,8 @@ export const OrderSuccessful: React.FC = () => {
     return (
       <section style={{ padding: 20 }}>
         <components.Button
-          label="Continue Shopping"
-          href={`${Routes.MENU_LIST}/all`}
+          label="Back to home"
+          href={`${Routes.TAB_NAVIGATOR}`}
           containerStyle={{ marginBottom: 14 }}
         />
         <components.Button

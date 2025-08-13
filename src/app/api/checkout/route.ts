@@ -167,6 +167,7 @@ export const POST = async (req: NextRequest) => {
       dishes,
       addons,
       total,
+      status: "placed",
       discount: usedPoints,
       isPlaced: true,
       placedTime: Date.now(),
@@ -177,10 +178,11 @@ export const POST = async (req: NextRequest) => {
       userId,
       {
         $set: { cart: null, region: deliveryRegion },
-        $inc: {
-          points: earnedPoints - usedPoints,
-          totalSpent: total,
-        },
+        // TODO: have to do this only when order status becomes delivered
+        // $inc: {
+        //   points: earnedPoints - usedPoints,
+        //   totalSpent: total,
+        // },
       },
       { new: true }
     );

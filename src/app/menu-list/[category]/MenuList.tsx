@@ -28,7 +28,12 @@ export const MenuList: React.FC<Props> = ({ category }) => {
   );
   const renderHeader = () => {
     return (
-      <components.Header title="Menu" showGoBack={true} showBasket={true} />
+      <components.Header
+        title="Menu"
+        showHome={true}
+        showGoBack={true}
+        showBasket={true}
+      />
     );
   };
 
@@ -115,11 +120,16 @@ export const MenuList: React.FC<Props> = ({ category }) => {
     );
   };
 
+  // const renderBottomTabBar = () => {
+  //   return <components.BottomTabBar />;
+  // };
+
   return (
     <components.Screen>
       {renderHeader()}
       {renderSearch()}
       {renderContent()}
+      {/* {renderBottomTabBar()} */}
     </components.Screen>
   );
 };

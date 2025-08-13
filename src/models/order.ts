@@ -40,8 +40,13 @@ export interface IOrder extends Document {
   deliveredTime: Date;
   isCancelled: Boolean;
   cancelledTime: Date;
+  cancellationReason: string;
   isRejected: Boolean;
   rejectedTime: Date;
+  rejectionReason: string;
+
+  status: string;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,8 +86,23 @@ const orderSchema = new Schema<IOrder>(
     deliveredTime: { type: Date },
     isCancelled: { type: Boolean, default: false },
     cancelledTime: { type: Date },
+    cancellationReason: { type: String },
     isRejected: { type: Boolean, default: false },
     rejectedTime: { type: Date },
+    rejectionReason: { type: String },
+    status: {
+      enum: [
+        "placed",
+        "accepted",
+        "prepared",
+        "delivered",
+        "cancelled",
+        "rejected",
+      ],
+      type: String,
+      required: true,
+      default: "placed",
+    },
   },
   { timestamps: true }
 );

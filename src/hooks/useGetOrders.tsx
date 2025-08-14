@@ -15,12 +15,13 @@ export const useGetOrders = () => {
     try {
       const response = await axios.get("/api/user/order");
 
-      console.log("response", response);
+      // console.log("response", response);
 
       if (response.status === 200 && response.data.success) {
         // Map API data to OrderType[]
         const apiOrders = response.data.data.map((order: any) => ({
           id: order.orderId,
+          _id: order._id,
           date: new Date(order.createdAt).toLocaleDateString("en-IN", {
             day: "2-digit",
             month: "short",
@@ -37,6 +38,9 @@ export const useGetOrders = () => {
           deliveryNote: order.deliveryNote,
           deliveryRegion: order.deliveryRegion,
           status: order.status,
+          isCancelled: order.isCancelled,
+          cancelledTime: order.cancelledTime,
+          cancellationReason: order.cancellationReason || "",
           products: [
             ...order.dishes.map((dishItem: any) => ({
               id: dishItem._id,
@@ -72,5 +76,5 @@ export const useGetOrders = () => {
     getOrders();
   }, []);
 
-  return { orders, ordersLoading, error };
+  return { orders, ordersLoading, error, refetch: getOrders };
 };

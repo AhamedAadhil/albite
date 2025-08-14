@@ -7,16 +7,59 @@ import { hooks } from "../../hooks";
 import { Routes } from "../../routes";
 import { components } from "../../components";
 import { renderLoader } from "@/components/Loader";
+import toast from "react-hot-toast";
+import { CancelOrderModal } from "@/components/CancelOrderModal";
+import { formatDateTime } from "@/libs/formatDateTime";
 
 export const OrderHistory: React.FC = () => {
-  const { orders, ordersLoading, error } = hooks.useGetOrders();
+  const { orders, ordersLoading, error, refetch } = hooks.useGetOrders();
   const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set());
 
-  // useEffect(() => {
-  //   if (orders.length === 0) {
-  //     return router.push(Routes.ORDER_HISTORY_EMPTY);
-  //   }
-  // }, [orders.length]);
+  // Modal state
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancelOrderId, setCancelOrderId] = useState<string | null | number>(
+    null
+  );
+
+  const openCancelModal = (orderId: string | number) => {
+    console.log("Opening cancel modal for order:", orderId);
+    setCancelOrderId(orderId);
+    setCancelModalOpen(true);
+  };
+
+  const closeCancelModal = () => {
+    setCancelModalOpen(false);
+    setCancelOrderId(null);
+  };
+
+  // Accept reason only, use cancelOrderId from state
+  const handleCancelOrder = async (cancelReason: string) => {
+    if (!cancelOrderId) return; // Ensure orderId is set
+
+    try {
+      const response = await fetch("/api/user/order", {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify({
+          orderId: cancelOrderId,
+          cancelReason,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+        refetch();
+        closeCancelModal();
+        return;
+      } else {
+        closeCancelModal();
+        return toast.error(data.message);
+      }
+    } catch (error: any) {
+      closeCancelModal();
+      return toast.error(error.message);
+    }
+  };
 
   const handleToggle = (id: string) => {
     setOpenAccordions((prev) => {
@@ -72,10 +115,7 @@ export const OrderHistory: React.FC = () => {
               color: "white",
             }}
             containerStyle={baseBtnStyle}
-            onClick={() => {
-              // TODO: Add cancel order logic here
-              alert(`Cancel order ${order.id} requested`);
-            }}
+            onClick={() => openCancelModal(order._id)}
           />
         );
 
@@ -276,21 +316,49 @@ export const OrderHistory: React.FC = () => {
 
               {isOpen && (
                 <>
-                  {/* Delivery Note */}
-                  {order.deliveryNote && (
+                  {/* Cancellation info if cancelled */}
+                  {order.status === "cancelled" && (
                     <div
+                      className="t14"
                       style={{
                         marginTop: "1rem",
                         marginBottom: "1rem",
                         padding: "0.75rem 1rem",
-                        backgroundColor: "var(--main-turquoise-light)",
+                        backgroundColor: "#FA5555",
                         borderRadius: 8,
-                        color: "var(--main-turquoise)",
-                        fontSize: "0.95rem",
-                        fontWeight: 500,
+                        color: "white",
+                        whiteSpace: "pre-wrap",
                       }}
                     >
-                      <strong>Delivery Note:</strong> {order.deliveryNote}
+                      <strong>Cancelled At:</strong>{" "}
+                      {formatDateTime(order.cancelledTime) || "N/A"}
+                      <br />
+                      <strong>Reason:</strong>{" "}
+                      {order.cancellationReason || "No reason provided"}
+                    </div>
+                  )}
+
+                  {/* Delivery Note in separate section */}
+                  {order.deliveryNote && (
+                    <div
+                      className="t14"
+                      style={{
+                        marginTop: "1.5rem",
+                        marginBottom: "1rem",
+                        padding: "1rem 1.25rem",
+                        backgroundColor: "var(--main-turquoise-light)", // soft turquoise background
+                        border: "1.5px solid var(--main-turquoise)", // border matching main turquoise color
+                        borderRadius: 12,
+                        color: "var(--main-turquoise)",
+
+                        lineHeight: 1.4,
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      <strong style={{ display: "block", marginBottom: 8 }}>
+                        Delivery Note:
+                      </strong>
+                      <span>{order.deliveryNote}</span>
                     </div>
                   )}
 
@@ -442,9 +510,17 @@ export const OrderHistory: React.FC = () => {
   };
 
   return (
-    <components.Screen>
-      {renderHeader()}
-      {renderContent()}
-    </components.Screen>
+    <>
+      <components.Screen>
+        {renderHeader()}
+        {renderContent()}
+      </components.Screen>
+      {/* Cancel Order Modal */}
+      <CancelOrderModal
+        isOpen={cancelModalOpen}
+        onClose={closeCancelModal}
+        onConfirm={handleCancelOrder}
+      />
+    </>
   );
 };

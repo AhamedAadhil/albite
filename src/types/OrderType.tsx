@@ -20,10 +20,13 @@ type OrderStatus =
   | "rejected";
 
 export type OrderType = {
+  cancellationReason: string;
+  cancelledTime: string;
   deliveryRegion: string;
   deliveryMethod: string;
   deliveryNote: string;
   id: number;
+  _id: string;
   date: string;
   time: string;
   status: OrderStatus;

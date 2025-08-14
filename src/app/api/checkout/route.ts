@@ -145,11 +145,11 @@ export const POST = async (req: NextRequest) => {
       totalAfterDiscount * Number(process.env.POINTS_PER_RUPEE)
     );
 
-    console.log(process.env.ADDALAICHENAI_FEE, "ADDALAICHENAI_FEE");
-    console.log("deliveryFee", deliveryFee);
-    console.log(earnedPoints, "earnedpoin");
-    console.log("totakAfteDriscount", totalAfterDiscount);
-    console.log("total", total);
+    // console.log(process.env.ADDALAICHENAI_FEE, "ADDALAICHENAI_FEE");
+    // console.log("deliveryFee", deliveryFee);
+    // console.log(earnedPoints, "earnedpoin");
+    // console.log("totakAfteDriscount", totalAfterDiscount);
+    // console.log("total", total);
 
     // GENERATE ORDER ID
     const orderId = await generateOrderId();
@@ -178,6 +178,7 @@ export const POST = async (req: NextRequest) => {
       userId,
       {
         $set: { cart: null, region: deliveryRegion },
+        $push: { orders: order._id },
         // TODO: have to do this only when order status becomes delivered
         // $inc: {
         //   points: earnedPoints - usedPoints,

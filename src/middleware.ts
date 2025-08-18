@@ -12,6 +12,10 @@ const PROTECTED_ROUTES = [
   "/menu-list/:category",
   "/menu-item/:id",
   "/order-successful",
+  "/special-orders",
+  "/track-your-order",
+  "/order-successful",
+  "/reviews",
 ];
 
 const getJwtSecret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -62,5 +66,9 @@ export const config = {
     "/menu-list/:category",
     "/menu-item/:id",
     "/order-successful",
+    "/special-orders",
+    "/track-your-order",
+    "/order-successful",
+    "/reviews",
   ],
 };

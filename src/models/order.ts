@@ -15,9 +15,11 @@ export interface IOrder extends Document {
 
   dishes: [
     {
+      reviews: any;
       dish: IDish;
       quantity: Number;
       packageType: string;
+      isReviewed: boolean;
     }
   ];
   addons: [
@@ -65,6 +67,7 @@ const orderSchema = new Schema<IOrder>(
         dish: { type: Schema.Types.ObjectId, ref: "Dish", required: true },
         quantity: { type: Number, required: true },
         packageType: { type: String, required: true },
+        isReviewed: { type: Boolean, default: false },
       },
     ],
     addons: [

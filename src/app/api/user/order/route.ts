@@ -1,5 +1,6 @@
 import connectDB from "@/config/db";
 import { verifyToken } from "@/libs/verifyToken";
+import AddOn from "@/models/addon";
 import { Order } from "@/models/order";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";

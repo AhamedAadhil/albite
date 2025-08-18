@@ -23,11 +23,9 @@ export const Home: React.FC = () => {
   const { recommendedDishes, recommendedLoading } =
     hooks.useGetRecommendedDishes();
 
-  const { reviews, reviewsLoading } = hooks.useGetReviews();
   const { carousel, carouselLoading } = hooks.useGetCarousel();
 
-  const isLoading =
-    menuLoading || recommendedLoading || reviewsLoading || carouselLoading;
+  const isLoading = menuLoading || recommendedLoading || carouselLoading;
 
   const handleSlideChange = (swiper: any) => {
     setActiveSlide(swiper.activeIndex);
@@ -353,30 +351,73 @@ export const Home: React.FC = () => {
     );
   };
 
-  const renderReviews = () => {
+  const renderSpecialOrders = () => {
     return (
-      <section style={{ marginBottom: 20 }}>
-        <components.BlockHeading
-          href={Routes.REVIEWS}
-          title="Our Happy clients say"
-          containerStyle={{ marginLeft: 20, marginRight: 20, marginBottom: 14 }}
-        />
-        <Swiper
-          spaceBetween={14}
-          slidesPerView={1.2}
-          pagination={{ clickable: true }}
-          navigation={true}
-          mousewheel={true}
-          style={{ padding: "0 20px" }}
+      <section
+        style={{
+          background: "linear-gradient(135deg, #ED1A25 0%, #F9A826 100%)",
+          borderRadius: 12,
+          padding: 30,
+          marginBottom: 30,
+          marginLeft: 20,
+          marginRight: 20,
+          textAlign: "center",
+          color: "#fff",
+          boxShadow: "0 8px 20px rgba(237, 26, 37, 0.4)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: 24,
+            marginBottom: 12,
+            fontWeight: "bold",
+            textShadow: "0 2px 6px rgba(0,0,0,0.4)",
+          }}
         >
-          {reviews.map((review: any) => {
-            return (
-              <SwiperSlide key={review.id}>
-                <items.ReviewItem review={review} />
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
+          Discover Our Special Orders
+        </h2>
+        <p
+          style={{
+            fontSize: 16,
+            marginBottom: 24,
+            maxWidth: 360,
+            lineHeight: 1.5,
+            textShadow: "0 1px 3px rgba(0,0,0,0.3)",
+          }}
+        >
+          Need bulk catering, special event menus, or custom recipes? Our cloud
+          kitchen is ready to fulfill your unique requests with delicious,
+          made-to-order meals crafted just for you.
+        </p>
+        <Link
+          href={"/special-orders"}
+          style={{
+            display: "inline-block",
+            backgroundColor: "#fff",
+            color: "#ED1A25",
+            padding: "14px 32px",
+            borderRadius: 10,
+            fontWeight: "bold",
+            fontSize: 16,
+            textDecoration: "none",
+            boxShadow: "0 4px 14px rgba(237, 26, 37, 0.4)",
+            transition: "background-color 0.3s ease, color 0.3s ease",
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#f9a826";
+            e.currentTarget.style.color = "#fff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#fff";
+            e.currentTarget.style.color = "#ED1A25";
+          }}
+        >
+          Request Your Special Order
+        </Link>
       </section>
     );
   };
@@ -625,7 +666,7 @@ export const Home: React.FC = () => {
         {renderCategories()}
         {renderRecommendedDishes()}
         {renderAboutUs()}
-        {renderReviews()}
+        {renderSpecialOrders()}
         {renderFooter()}
       </main>
     );

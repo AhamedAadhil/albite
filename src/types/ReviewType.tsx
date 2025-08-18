@@ -1,10 +1,6 @@
 export type ReviewType = {
-  id: number;
+  _id: string;
   name: string;
   rating: number;
-  comment?: string;
-  createdAt?: string;
-  email?: string;
-  date?: string;
-  avatar?: string;
+  comment: string;
 };

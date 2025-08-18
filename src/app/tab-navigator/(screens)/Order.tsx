@@ -11,13 +11,14 @@ export const Order: React.FC = () => {
   const { list } = stores.useCartStore();
   const { addonsList } = stores.useCartStore();
 
+  console.log("list", list);
+  console.log("addonsList", addonsList);
+
   const renderHeader = () => {
     return <components.Header user={true} title="Order" showBasket={true} />;
   };
 
   const renderContent = () => {
-    console.log("addonsList", addonsList);
-
     const subtotalDishes = list.reduce(
       (sum, dish) => sum + Number(dish.price) * (dish.quantity ?? 1),
       0

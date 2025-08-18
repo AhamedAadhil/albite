@@ -1,6 +1,8 @@
 import { verifyToken } from "@/libs/verifyToken";
-import Cart from "@/models/cart";
 import User from "@/models/user";
+import Cart from "@/models/cart";
+import Dish from "@/models/dish";
+import AddOn from "@/models/addon";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -28,7 +30,10 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       })
       .populate({
         path: "cart",
-        model: "Cart",
+        populate: [
+          { path: "dishes.dish", model: "Dish" },
+          { path: "addons.addon", model: "AddOn" },
+        ],
       });
 
     if (!profile) {

@@ -15,7 +15,7 @@ export const useGetOrders = () => {
     try {
       const response = await axios.get("/api/user/order");
 
-      // console.log("response", response);
+      console.log("response", response);
 
       if (response.status === 200 && response.data.success) {
         // Map API data to OrderType[]
@@ -43,11 +43,13 @@ export const useGetOrders = () => {
           cancellationReason: order.cancellationReason || "",
           products: [
             ...order.dishes.map((dishItem: any) => ({
-              id: dishItem._id,
+              id: dishItem.dish._id,
               name: dishItem.dish.name,
+              image: dishItem.dish.image,
               quantity: dishItem.quantity,
               price: dishItem.dish.price,
               packageType: dishItem.packageType,
+              isReviewed: dishItem.isReviewed,
               type: "dish",
             })),
             ...order.addons.map((addonItem: any) => ({

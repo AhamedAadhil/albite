@@ -1,10 +1,10 @@
-import type {Metadata} from 'next';
+import type { Metadata } from "next";
 
-import {TrackYourOrder} from './TrackYourOrder';
+import { TrackYourOrder } from "./TrackYourOrder";
 
 export const metadata: Metadata = {
-  title: 'Verify Your Phone Number',
-  description: 'Verify Your Phone Number',
+  title: "Track Your Order",
+  description: "Track your order.",
 };
 
 export default function Page() {

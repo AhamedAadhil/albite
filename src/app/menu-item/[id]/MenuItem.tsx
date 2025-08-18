@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { svg } from "../../../svg";
 import { stores } from "../../../stores";
@@ -26,6 +27,7 @@ type AddOn = {
 };
 
 export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
+  const router = useRouter();
   const [dish, setDish] = useState<DishType | null>(null);
   const [dishQuantity, setDishQuantity] = useState(1);
   const [addons, setAddons] = useState<AddOn[]>([]);
@@ -818,7 +820,11 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
 
         <components.Button
           label="Reviews"
-          href="/reviews"
+          // href="/reviews"
+          onClick={() => {
+            router.push("/reviews");
+            localStorage.setItem("dishIdToFetchReviews", String(dish._id));
+          }}
           colorScheme="secondary"
           containerStyle={{ width: "100%", fontSize: 16, fontWeight: "600" }}
         />

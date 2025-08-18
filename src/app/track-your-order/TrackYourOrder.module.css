@@ -1,0 +1,23 @@
+@keyframes progressLoading {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.line {
+  width: 2px;
+  height: 30px;
+  margin-bottom: 6px;
+  border-radius: 1px;
+  background-color: #00b0b9;
+}
+
+.loading {
+  background: linear-gradient(90deg, #00b0b9 25%, #80d6d9 50%, #00b0b9 75%);
+  background-size: 200% 100%;
+  animation: progressLoading 1.5s linear infinite;
+  background-position: 0% 0;
+}

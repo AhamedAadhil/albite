@@ -162,6 +162,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       });
     }
 
+    await User.findByIdAndUpdate(user._id, {
+      $set: { cart: cart._id },
+    });
+
     const populatedCart = await Cart.findById(cart._id)
       .populate("dishes.dish")
       .populate("addons.addon");
@@ -270,6 +274,10 @@ export const PATCH = async (req: NextRequest) => {
 
     cart.total = newTotal;
     await cart.save();
+
+    await User.findByIdAndUpdate(user._id, {
+      $set: { cart: cart._id },
+    });
 
     const populatedCart = await Cart.findById(cart._id)
       .populate("dishes.dish")

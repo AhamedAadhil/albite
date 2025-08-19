@@ -1,8 +1,6 @@
-import axios from 'axios';
-import {useState, useEffect} from 'react';
-
-import {URLS} from '../config';
-import {NotificationType} from '../types';
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { NotificationType } from "../types";
 
 export const useGetNotifications = () => {
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
@@ -13,8 +11,9 @@ export const useGetNotifications = () => {
     setNotificationsLoading(true);
 
     try {
-      const response = await axios.get(URLS.GET_NOTIFICATIONS);
-      setNotifications(response.data.notifications);
+      const response = await axios.get("/api/user/notification");
+      setNotifications(response.data.data.notifications);
+      // console.log(response.data.data.notifications, "from useGetNotifications");
     } catch (error) {
       console.error(error);
     } finally {
@@ -26,5 +25,5 @@ export const useGetNotifications = () => {
     getDishes();
   }, []);
 
-  return {notificationsLoading, notifications};
+  return { notificationsLoading, notifications, refetch: getDishes };
 };

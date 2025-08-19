@@ -3,4 +3,6 @@ export type NotificationType = {
   date?: string;
   title?: string;
   description?: string;
+  notifications?: any[];
+  createdAt: Date;
 };

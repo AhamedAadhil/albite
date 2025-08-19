@@ -21,6 +21,7 @@ export interface IUser extends Document {
   cart: mongoose.Types.ObjectId;
   favourites: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
+  notifications: mongoose.Types.ObjectId[];
 
   isActive?: boolean;
 
@@ -115,6 +116,13 @@ const userSchema = new Schema<IUser>(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Review",
+      },
+    ],
+
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
       },
     ],
 

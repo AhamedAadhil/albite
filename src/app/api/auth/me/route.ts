@@ -3,6 +3,7 @@ import User from "@/models/user";
 import Cart from "@/models/cart";
 import Dish from "@/models/dish";
 import AddOn from "@/models/addon";
+import Notification from "@/models/notification";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";

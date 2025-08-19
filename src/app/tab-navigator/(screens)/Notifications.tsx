@@ -1,97 +1,170 @@
-'use client';
+"use client";
 
-import React, {useState} from 'react';
+import React from "react";
 
-import {svg} from '../../../svg';
-import {hooks} from '../../../hooks';
-import {components} from '../../../components';
+import { svg } from "../../../svg";
+import { hooks } from "../../../hooks";
+import { components } from "../../../components";
+import { formatDateTime } from "@/libs/formatDateTime";
+import { renderLoader } from "@/components/Loader";
 
 export const Notifications: React.FC = () => {
-  const {notifications} = hooks.useGetNotifications();
+  const { notifications, notificationsLoading, refetch } =
+    hooks.useGetNotifications();
 
-  const [readNotifications, setReadNotifications] = useState<Set<string>>(
-    new Set(),
-  );
+  const sortedNotifications = [...(notifications || [])].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 
-  const handleMarkAsRead = (id: string) => {
-    setReadNotifications((prev) => new Set(prev).add(id));
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      // Make a PATCH or POST request to your API route that marks notification as read.
+      const response = await fetch("/api/user/notification", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notificationId: id }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        await refetch();
+      } else {
+        console.error("Failed to mark notification as read:", result.message);
+      }
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
   };
+
+  if (notificationsLoading) {
+    return renderLoader();
+  }
 
   const renderHeader = () => {
     return (
-      <components.Header
-        user={true}
-        showBasket={true}
-        title='Notifications'
-      />
+      <components.Header user={true} showBasket={true} title="Notifications" />
     );
   };
 
   const renderContent = () => {
     return (
-      <main className='container scrollable'>
-        <ul style={{paddingTop: 10, paddingBottom: 20}}>
-          {notifications.map((notification: any, index: number, array: any) => {
-            const isLast = index === array.length - 1;
-            const isRead = readNotifications.has(String(notification.id));
+      <main className="container scrollable">
+        {sortedNotifications.length === 0 ? (
+          <div
+            style={{
+              padding: 40,
+              textAlign: "center",
+              color: "var(--text-primary)", // Use your main text color variable or specific color
+              height: "calc(100vh - 100px)", // Adjust for header/footer if any, or use "100vh" for full screen
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "0 auto",
+            }}
+          >
+            <svg.EmptyBellSvg
+              width={80}
+              height={80}
+              style={{ marginBottom: 24, color: "var(--icon-color)" }} // Customize icon color if needed
+            />
+            <h3>No notifications yet</h3>
+            <p>You have no new updates or alerts at this moment.</p>
+            <button
+              onClick={() => refetch()}
+              style={{
+                marginTop: 16,
+                padding: "8px 16px",
+                backgroundColor: "var(--main-turquoise)",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontWeight: "600",
+                fontSize: 14,
+                transition: "background-color 0.3s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#005f99")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "var(--main-turquoise)")
+              }
+            >
+              Refresh
+            </button>
+          </div>
+        ) : (
+          <ul style={{ paddingTop: 10, paddingBottom: 20 }}>
+            {sortedNotifications?.map(
+              (notification: any, index: number, array: any) => {
+                const isLast = index === array.length - 1;
 
-            return (
-              <li
-                key={notification.id}
-                style={{
-                  backgroundColor: 'var(--white-color)',
-                  borderRadius: 10,
-                  padding: 20,
-                  marginBottom: isLast ? 0 : 14,
-                }}
-              >
-                <section style={{opacity: isRead ? 0.5 : 1}}>
-                  <div
+                return (
+                  <li
+                    key={notification._id}
                     style={{
-                      gap: 8,
-                      marginBottom: 14,
-                      display: 'flex',
-                      alignItems: 'center',
+                      backgroundColor: "var(--white-color)",
+                      borderRadius: 10,
+                      padding: 20,
+                      marginBottom: isLast ? 0 : 14,
                     }}
                   >
-                    {notification.title === 'Order Out for Delivery' && (
-                      <svg.NotificationCheckSvg />
-                    )}
-                    {notification.title === 'Limited-Time Deal' && (
-                      <svg.GiftSvg />
-                    )}
-                    {notification.title === 'Reservation Confirmed' && (
-                      <svg.NotificationCheckSvg />
-                    )}
-                    <h5 className='number-of-lines-1'>{notification.title}</h5>
-                  </div>
-                  <p
-                    className='t14'
-                    style={{marginBottom: 14}}
-                  >
-                    {notification.description}
-                  </p>
-                  <div
-                    style={{display: 'flex', justifyContent: 'space-between'}}
-                  >
-                    <span className='t12'>{notification.date}</span>
-                    {!isRead && (
-                      <span
-                        className='t12 clickable'
-                        style={{color: 'var(--main-turquoise)'}}
-                        onClick={() =>
-                          handleMarkAsRead(String(notification.id))
-                        }
+                    <section style={{ opacity: notification.isRead ? 0.5 : 1 }}>
+                      <div
+                        style={{
+                          gap: 8,
+                          marginBottom: 14,
+                          display: "flex",
+                          alignItems: "center",
+                        }}
                       >
-                        Mark as read
-                      </span>
-                    )}
-                  </div>
-                </section>
-              </li>
-            );
-          })}
-        </ul>
+                        {notification.type === "Order Status Update" && (
+                          <svg.NotificationCheckSvg />
+                        )}
+                        {notification.type === "Points Updated" && (
+                          <svg.GiftSvg />
+                        )}
+                        {notification.type === "Promotion" && (
+                          <svg.NotificationCheckSvg />
+                        )}
+                        <h5 className="number-of-lines-1">
+                          {notification.type}
+                        </h5>
+                      </div>
+                      <p className="t14" style={{ marginBottom: 14 }}>
+                        {notification.message}
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span className="t12">
+                          {formatDateTime(notification.createdAt)}
+                        </span>
+                        {!notification.isRead && (
+                          <span
+                            className="t12 clickable"
+                            style={{ color: "var(--main-turquoise)" }}
+                            onClick={() =>
+                              handleMarkAsRead(String(notification._id))
+                            }
+                          >
+                            Mark as read
+                          </span>
+                        )}
+                      </div>
+                    </section>
+                  </li>
+                );
+              }
+            )}
+          </ul>
+        )}
       </main>
     );
   };

@@ -97,73 +97,103 @@ export const Notifications: React.FC = () => {
             </button>
           </div>
         ) : (
-          <ul style={{ paddingTop: 10, paddingBottom: 20 }}>
-            {sortedNotifications?.map(
-              (notification: any, index: number, array: any) => {
-                const isLast = index === array.length - 1;
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end", // aligns content to right
+                marginBottom: 12,
+              }}
+            >
+              <button
+                type="button"
+                style={{
+                  marginTop: 16,
+                  background: "none",
+                  border: "none",
+                  color: "var(--main-turquoise)",
+                  cursor: "pointer",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  textDecoration: "underline",
+                  padding: 0,
+                }}
+                onClick={() => handleMarkAsRead("all")}
+              >
+                Mark all as read
+              </button>
+            </div>
 
-                return (
-                  <li
-                    key={notification._id}
-                    style={{
-                      backgroundColor: "var(--white-color)",
-                      borderRadius: 10,
-                      padding: 20,
-                      marginBottom: isLast ? 0 : 14,
-                    }}
-                  >
-                    <section style={{ opacity: notification.isRead ? 0.5 : 1 }}>
-                      <div
-                        style={{
-                          gap: 8,
-                          marginBottom: 14,
-                          display: "flex",
-                          alignItems: "center",
-                        }}
+            <ul style={{ paddingTop: 10, paddingBottom: 20 }}>
+              {sortedNotifications?.map(
+                (notification: any, index: number, array: any) => {
+                  const isLast = index === array.length - 1;
+
+                  return (
+                    <li
+                      key={notification._id}
+                      style={{
+                        backgroundColor: "var(--white-color)",
+                        borderRadius: 10,
+                        padding: 20,
+                        marginBottom: isLast ? 0 : 14,
+                      }}
+                    >
+                      <section
+                        style={{ opacity: notification.isRead ? 0.5 : 1 }}
                       >
-                        {notification.type === "Order Status Update" && (
-                          <svg.NotificationCheckSvg />
-                        )}
-                        {notification.type === "Points Updated" && (
-                          <svg.GiftSvg />
-                        )}
-                        {notification.type === "Promotion" && (
-                          <svg.NotificationCheckSvg />
-                        )}
-                        <h5 className="number-of-lines-1">
-                          {notification.type}
-                        </h5>
-                      </div>
-                      <p className="t14" style={{ marginBottom: 14 }}>
-                        {notification.message}
-                      </p>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <span className="t12">
-                          {formatDateTime(notification.createdAt)}
-                        </span>
-                        {!notification.isRead && (
-                          <span
-                            className="t12 clickable"
-                            style={{ color: "var(--main-turquoise)" }}
-                            onClick={() =>
-                              handleMarkAsRead(String(notification._id))
-                            }
-                          >
-                            Mark as read
+                        <div
+                          style={{
+                            gap: 8,
+                            marginBottom: 14,
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          {notification.type === "Order Status Update" && (
+                            <svg.NotificationCheckSvg />
+                          )}
+                          {notification.type === "Points Updated" && (
+                            <svg.GiftSvg />
+                          )}
+                          {notification.type === "Promotion" && (
+                            <svg.NotificationCheckSvg />
+                          )}
+                          <h5 className="number-of-lines-1">
+                            {notification.type}
+                          </h5>
+                        </div>
+                        <p className="t14" style={{ marginBottom: 14 }}>
+                          {notification.message}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <span className="t12">
+                            {formatDateTime(notification.createdAt)}
                           </span>
-                        )}
-                      </div>
-                    </section>
-                  </li>
-                );
-              }
-            )}
-          </ul>
+                          {!notification.isRead && (
+                            <span
+                              className="t12 clickable"
+                              style={{ color: "var(--main-turquoise)" }}
+                              onClick={() =>
+                                handleMarkAsRead(String(notification._id))
+                              }
+                            >
+                              Mark as read
+                            </span>
+                          )}
+                        </div>
+                      </section>
+                    </li>
+                  );
+                }
+              )}
+            </ul>
+          </>
         )}
       </main>
     );

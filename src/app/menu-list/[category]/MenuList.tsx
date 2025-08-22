@@ -26,6 +26,7 @@ export const MenuList: React.FC<Props> = ({ category }) => {
   const filteredDishes = dishes.filter((dish) =>
     dish.name.toLowerCase().includes(search.toLowerCase())
   );
+
   const renderHeader = () => {
     return (
       <components.Header

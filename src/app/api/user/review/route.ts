@@ -1,4 +1,5 @@
 import connectDB from "@/config/db";
+import { createAdminNotification } from "@/libs/createAdminNotification";
 import { verifyToken } from "@/libs/verifyToken";
 import Dish from "@/models/dish";
 import { Order } from "@/models/order";
@@ -116,6 +117,11 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       ); // Multi-Status
     }
 
+    await createAdminNotification({
+      message: `${dbUser.name} has given a review!`,
+      type: "New Comment Added",
+    });
+
     return NextResponse.json(
       { success: true, message: "Review(s) added successfully" },
       { status: 200 }
@@ -153,8 +159,9 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
 
     const reviews = await Review.find({ dish: dishId })
       .select("-orderId -updatedAt -__v")
-      .populate("user", "name");
-    console.log("reviews", reviews);
+      .populate("user", "name")
+      .sort({ createdAt: -1 });
+    // console.log("reviews", reviews);
     return NextResponse.json({ success: true, data: reviews }, { status: 200 });
   } catch (error: any) {
     console.error(error);

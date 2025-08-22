@@ -392,10 +392,10 @@ export const OrderHistory: React.FC = () => {
                       borderRadius: 14,
                       backgroundColor: statusColors[order.status] || "#AAA",
                       color: "#fff",
-                      fontWeight: 600,
+
                       textTransform: "capitalize",
                       whiteSpace: "nowrap",
-                      fontSize: "0.85rem",
+                      fontSize: "0.65rem",
                       userSelect: "none",
                     }}
                   >

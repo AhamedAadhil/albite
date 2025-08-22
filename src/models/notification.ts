@@ -4,7 +4,7 @@ export interface INotification extends Document {
   message: string; // Notification message text
   type: string; // Notification type/category (e.g., "order", "system", "promotion")
   recipientType: "User" | "Admin"; // Type of recipient (for polymorphism)
-  recipientId: mongoose.Types.ObjectId; // Reference to either User or Admin collection
+  recipientId: mongoose.Types.ObjectId | string; // Reference to either User or Admin collection
   isRead: boolean; // Read status
   readAt?: Date; // When user read the notification
   meta?: Record<string, any>; // Optional field for extra info (e.g., orderId, URL)
@@ -18,11 +18,19 @@ const notificationSchema = new Schema<INotification>(
     type: {
       type: String,
       required: true,
-      enum: ["Order Status Update", "Points Reward", "Promotion"],
+      enum: [
+        "New Order Placed",
+        "New User Registered",
+        "New Comment Added",
+        "Order Status Update",
+        "Points Reward",
+        "Promotion",
+        "System Notification",
+      ],
     },
     recipientType: { type: String, required: true, enum: ["User", "Admin"] },
     recipientId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId || String,
       required: true,
       refPath: "User", // Dynamic reference based on recipientType
     },

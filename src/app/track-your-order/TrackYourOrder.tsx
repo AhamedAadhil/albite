@@ -142,7 +142,7 @@ export const TrackYourOrder: React.FC = () => {
               flexDirection: "row",
             }}
           >
-            <span className="t14">Date:</span>
+            <span className="t14">Placed on:</span>
             <span
               className="t14"
               style={{ fontWeight: 500, color: "var(--main-turquoise)" }}

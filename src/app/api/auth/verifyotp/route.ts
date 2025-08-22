@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import connectDB from "@/config/db";
 import User from "@/models/user";
+import { createAdminNotification } from "@/libs/createAdminNotification";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
@@ -27,6 +28,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     user.otp = ""; // Clear OTP
     user.otpExpires = undefined;
     await user.save();
+
+    // Create Notification for new user
+    await createAdminNotification({
+      message: `${user.name} has been verified successfully!`,
+      type: "New User Registered",
+    });
 
     return NextResponse.json(
       { success: true, message: "Account verified successfully" },

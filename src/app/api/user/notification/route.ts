@@ -43,6 +43,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
+// to delete all or specific notification
 // DELETE /api/user/notification
 export const DELETE = async (req: NextRequest, res: NextResponse) => {
   try {
@@ -71,23 +72,57 @@ export const DELETE = async (req: NextRequest, res: NextResponse) => {
 
     await connectDB();
 
-    // Remove notificationId from user's notifications array
-    const updatedUser = await User.findByIdAndUpdate(
-      user._id,
-      { $pull: { notifications: notificationId } },
-      { new: true }
-    ).populate("notifications");
+    if (notificationId === "all") {
+      // Delete all notifications for the user
 
-    await Notification.findByIdAndDelete(notificationId);
+      // Find user's notifications
+      const userWithNotifications = await User.findById(user._id).select(
+        "notifications"
+      );
+      if (!userWithNotifications) {
+        return NextResponse.json(
+          { success: false, message: "User not found" },
+          { status: 404 }
+        );
+      }
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Notification deleted successfully",
-        data: updatedUser,
-      },
-      { status: 200 }
-    );
+      const notificationIds = userWithNotifications.notifications;
+
+      // Remove all notifications documents
+      await Notification.deleteMany({ _id: { $in: notificationIds } });
+
+      // Clear notifications array on the user
+      userWithNotifications.notifications = [];
+      await userWithNotifications.save();
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "All notifications deleted successfully",
+        },
+        { status: 200 }
+      );
+    } else {
+      // Delete single notification by ID
+
+      // Remove notificationId from user's notifications array
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { $pull: { notifications: notificationId } },
+        { new: true }
+      ).populate("notifications");
+
+      await Notification.findByIdAndDelete(notificationId);
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Notification deleted successfully",
+          data: updatedUser,
+        },
+        { status: 200 }
+      );
+    }
   } catch (error: any) {
     console.error(error.message);
     return NextResponse.json(

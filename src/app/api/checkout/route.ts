@@ -1,4 +1,5 @@
 import connectDB from "@/config/db";
+import { createAdminNotification } from "@/libs/createAdminNotification";
 import { generateOrderId } from "@/libs/generateOrderId";
 import { verifyToken } from "@/libs/verifyToken";
 import AddOn from "@/models/addon";
@@ -189,6 +190,11 @@ export const POST = async (req: NextRequest) => {
     );
 
     await Cart.deleteOne({ user: userId });
+
+    await createAdminNotification({
+      message: `New order placed: (${order.orderId})`,
+      type: "New Order Placed",
+    });
 
     return NextResponse.json(
       {

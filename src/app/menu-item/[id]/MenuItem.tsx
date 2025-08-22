@@ -12,6 +12,7 @@ import { UserIcon, BabyIcon } from "lucide-react";
 import { renderLoader } from "@/components/Loader";
 import { isAvailableNow } from "@/libs/isAvailableNow";
 import toast from "react-hot-toast";
+import PreOrderModal from "@/components/ConfirmPreorderModal";
 
 type Props = {
   menuItemId: string;
@@ -80,16 +81,6 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     };
     fetchDish();
   }, [menuItemId]);
-
-  // ⏰ Dish availability logic
-  // const isDishAvailable = (dish: DishType | null): boolean => {
-  //   if (!dish || !dish.isActive) return false;
-  //   const now = new Date();
-  //   const [hour, minute] = dish.availableBefore.split(":").map(Number);
-  //   const availableUntil = new Date();
-  //   availableUntil.setHours(hour, minute, 0, 0);
-  //   return now < availableUntil;
-  // };
 
   const incrementAddon = (id: string) => {
     setSelectedAddons((prev) => ({
@@ -654,15 +645,6 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
     </section>
   );
 
-  // const formatTime = (timeStr: string) => {
-  //   const [hour, minute] = timeStr.split(":").map(Number);
-  //   // Format to 12-hour am/pm format (optional)
-  //   const ampm = hour >= 12 ? "PM" : "AM";
-  //   const hr12 = hour % 12 === 0 ? 12 : hour % 12;
-  //   const paddedMinute = minute.toString().padStart(2, "0");
-  //   return `${hr12}:${paddedMinute} ${ampm}`;
-  // };
-
   const renderActions = () => {
     if (!dish) return null;
 
@@ -754,68 +736,11 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
 
         {/* PREORDER MODAL */}
         {showPreOrderModal && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            style={{
-              position: "fixed",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(0,0,0,0.45)",
-              zIndex: 2000,
-            }}
-            onClick={cancelPreOrder} // Clicking outside closes modal
-          >
-            <div
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
-              style={{
-                width: "90%",
-                maxWidth: 420,
-                backgroundColor: "white",
-                padding: 20,
-                borderRadius: 12,
-                boxShadow: "0 8px 30px rgba(0,0,0,0.25)",
-              }}
-            >
-              <h3>Pre-order for tomorrow</h3>
-              <p style={{ color: "#444", marginBottom: 18 }}>
-                This dish is not available for immediate preparation. If you
-                proceed, your order will be prepared for tomorrow. Do you want
-                to continue?
-              </p>
-              <div
-                style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}
-              >
-                <button
-                  onClick={cancelPreOrder}
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: 8,
-                    border: "1px solid #ccc",
-                    backgroundColor: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmPreOrder}
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: 8,
-                    border: "none",
-                    backgroundColor: "#2c3e50",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Confirm Pre-order
-                </button>
-              </div>
-            </div>
-          </div>
+          <PreOrderModal
+            show={showPreOrderModal}
+            cancelPreOrder={cancelPreOrder}
+            confirmPreOrder={confirmPreOrder}
+          />
         )}
 
         <components.Button

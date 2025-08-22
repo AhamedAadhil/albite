@@ -1,7 +1,7 @@
 import { DM_Sans } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import { Toaster } from "react-hot-toast";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "swiper/css";
 import "../scss/_index.scss";
 
@@ -35,6 +35,7 @@ export default function RootLayout({
         <Toaster position="top-center" reverseOrder={false} />
         {children}
       </body>
+      <GoogleAnalytics gaId={process.env.MEASUREMENT_ID!} />
     </html>
   );
 }

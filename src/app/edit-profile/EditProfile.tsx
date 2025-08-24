@@ -113,26 +113,16 @@ export const EditProfile: React.FC = () => {
             </div>
           </div>
 
-          {/* User Stats - totalSpent and points */}
+          {/* User Stats -points */}
           <div
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: 40,
               marginBottom: 30,
               fontWeight: 600,
               color: "var(--main-dark)",
             }}
           >
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
-                Rs. {user?.totalSpent?.toFixed(2) || "0"}
-              </div>
-              <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
-                Total Spent
-              </div>
-            </div>
-
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
                 {user?.points || 0}

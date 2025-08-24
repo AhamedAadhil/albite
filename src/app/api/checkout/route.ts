@@ -1,6 +1,7 @@
 import connectDB from "@/config/db";
 import { createAdminNotification } from "@/libs/createAdminNotification";
 import { generateOrderId } from "@/libs/generateOrderId";
+import { getValueByKey } from "@/libs/getValueByKey";
 import { verifyToken } from "@/libs/verifyToken";
 import AddOn from "@/models/addon";
 import Cart from "@/models/cart";
@@ -124,17 +125,39 @@ export const POST = async (req: NextRequest) => {
     // CALCULATE DELIVERY FEE BASED ON DELIVERY REGION
     // TODO: Ensure delivery Region logic aligns with  business rules
     if (deliveryMethod === "delivery") {
-      if (deliveryRegion === "Akkaraipattu") {
-        deliveryFee = Number(process.env.AKKARAIPATTU_FEE);
-      } else if (deliveryRegion === "Palamunai") {
-        deliveryFee = Number(process.env.PALAMUNAI_FEE);
-      } else if (deliveryRegion === "Addalaichenai") {
-        deliveryFee = Number(process.env.ADDALAICHENAI_FEE);
-      } else if (deliveryRegion === "Sagamam") {
-        deliveryFee = Number(process.env.SAGAMAM_FEE);
-      } else if (deliveryRegion === "Kudiyiruppu") {
-        deliveryFee = Number(process.env.KUDIYIRUPPU_FEE);
+      const regionKeyMap: Record<string, string> = {
+        Akkaraipattu: "AKKARAIPATTU_DELIVERY_FEE",
+        Palamunai: "PALAMUNAI_DELIVERY_FEE",
+        Addalaichenai: "ADDALAICHENAI_DELIVERY_FEE",
+        Sagamam: "SAGAMAM_DELIVERY_FEE",
+        Kudiyiruppu: "KUDIYIRUPPU_DELIVERY_FEE",
+      };
+      const settingKey = regionKeyMap[deliveryRegion];
+
+      // if (deliveryRegion === "Akkaraipattu") {
+      //   deliveryFee = Number(process.env.AKKARAIPATTU_FEE);
+      // } else if (deliveryRegion === "Palamunai") {
+      //   deliveryFee = Number(process.env.PALAMUNAI_FEE);
+      // } else if (deliveryRegion === "Addalaichenai") {
+      //   deliveryFee = Number(process.env.ADDALAICHENAI_FEE);
+      // } else if (deliveryRegion === "Sagamam") {
+      //   deliveryFee = Number(process.env.SAGAMAM_FEE);
+      // } else if (deliveryRegion === "Kudiyiruppu") {
+      //   deliveryFee = Number(process.env.KUDIYIRUPPU_FEE);
+      // } else {
+      //   deliveryFee = 400;
+      // }
+
+      if (settingKey) {
+        const setting = await getValueByKey(settingKey);
+        if (setting) {
+          deliveryFee = Number(setting.value);
+        } else {
+          // Fallback if setting not found in DB
+          deliveryFee = 400;
+        }
       } else {
+        // Default fallback if region unknown
         deliveryFee = 400;
       }
     }
@@ -142,9 +165,14 @@ export const POST = async (req: NextRequest) => {
     // Calculate final total after discount and delivery fee
     const total = totalAfterDiscount + deliveryFee;
 
-    const earnedPoints = Math.floor(
-      totalAfterDiscount * Number(process.env.POINTS_PER_RUPEE)
-    );
+    const pointsPerRupeeSetting = await getValueByKey("POINTS_PER_RUPEE");
+    if (!pointsPerRupeeSetting) {
+      throw new Error("Points per rupee setting not found");
+    }
+
+    const pointsPerRupee = Number(pointsPerRupeeSetting.value);
+
+    const earnedPoints = Math.floor(totalAfterDiscount * pointsPerRupee);
 
     // console.log(process.env.ADDALAICHENAI_FEE, "ADDALAICHENAI_FEE");
     // console.log("deliveryFee", deliveryFee);

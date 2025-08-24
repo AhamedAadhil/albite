@@ -170,6 +170,35 @@ export const useCartStore = create<CartStateType>()(
         }
       },
 
+      clearCart: async () => {
+        try {
+          const userId = useAuthStore.getState().user?._id;
+          if (!userId) {
+            toast.error("User not authenticated");
+            return;
+          }
+
+          const res = await fetch("/api/user/cart", {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            set({ ...initialState }); // clear Zustand cart state
+            toast.success(data.message || "Cart cleared successfully");
+          } else {
+            toast.error(data.message || "Failed to clear cart.");
+          }
+        } catch (error: any) {
+          console.error("Error clearing cart:", error);
+          toast.error(error.message || "Something went wrong clearing cart.");
+        }
+      },
+
       resetCart: () => {
         set(() => ({ ...initialState }));
       },

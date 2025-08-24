@@ -12,6 +12,7 @@ import { Gift, User, Mail, Phone, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 import { fetchUserProfile } from "@/libs/getUserProfile";
 import InfoPopup from "@/components/OrderInfo";
+import { renderLoader } from "@/components/Loader";
 
 export const Checkout: React.FC = () => {
   const { total, list, addonsList, resetCart } = stores.useCartStore();
@@ -21,6 +22,54 @@ export const Checkout: React.FC = () => {
   let deliveryFee = 0;
 
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [pointsPerRupee, setPointsPerRupee] = React.useState<number>(0);
+  const [loading, setLoading] = useState(false);
+  const [initLoading, setInitLoading] = useState(false);
+
+  const regionToSettingKey: Record<string, string> = {
+    Akkaraipattu: "AKKARAIPATTU_DELIVERY_FEE",
+    Palamunai: "PALAMUNAI_DELIVERY_FEE",
+    Addalaichenai: "ADDALAICHENAI_DELIVERY_FEE",
+    Sagamam: "SAGAMAM_DELIVERY_FEE",
+    Kudiyiruppu: "KUDIYIRUPPU_DELIVERY_FEE",
+  };
+
+  const [fees, setFees] = React.useState<Record<string, number>>({});
+
+  React.useEffect(() => {
+    async function fetchFees() {
+      setInitLoading(true);
+      const settings: Record<string, number> = {};
+      await Promise.all(
+        Object.values(regionToSettingKey).map(async (settingKey) => {
+          const res = await fetch(`/api/settings/${settingKey}`);
+          if (res.ok) {
+            const data = await res.json();
+            settings[settingKey] = Number(data.value);
+          } else {
+            settings[settingKey] = 400; // default fallback fee
+          }
+        })
+      );
+
+      setFees(settings);
+      setInitLoading(false);
+    }
+    fetchFees();
+  }, []);
+
+  React.useEffect(() => {
+    async function fetchPointsPerRupee() {
+      setInitLoading(true);
+      const res = await fetch("/api/settings/POINTS_PER_RUPEE");
+      if (res.ok) {
+        const data = await res.json();
+        setPointsPerRupee(Number(data.value));
+      }
+      setInitLoading(false);
+    }
+    fetchPointsPerRupee();
+  }, []);
 
   // TODO:change region
   const regions = [
@@ -48,22 +97,10 @@ export const Checkout: React.FC = () => {
     "delivery" | "takeaway"
   >("delivery");
 
-  const [loading, setLoading] = useState(false);
-
-  // const totalAddons = addonsList.reduce((sum, addon) => {
-  //   const price =
-  //     typeof addon.addonId === "object" && addon.addonId !== null
-  //       ? addon.addonId.price ?? 0
-  //       : 0;
-  //   return sum + price * (addon.quantity ?? 1);
-  // }, 0);
-
   // Calculate points earned from the order
   // TODO:recalculate loyalty points math
   const orderAmountForPoints = total - usePoints; // or subtotal without delivery/discount if you prefer
-  const pointsEarned = Math.floor(
-    orderAmountForPoints * Number(process.env.NEXT_PUBLIC_POINTS_PER_RUPEE)!
-  );
+  const pointsEarned = Math.floor(orderAmountForPoints * pointsPerRupee);
 
   const maxPoints = user?.points ?? 0;
 
@@ -78,24 +115,13 @@ export const Checkout: React.FC = () => {
     selectedRegion: string,
     deliveryOption: string
   ) => {
-    if (deliveryOption === "delivery") {
-      if (selectedRegion === "Akkaraipattu") {
-        deliveryFee = Number(process.env.NEXT_PUBLIC_AKKARAIPATTU_FEE);
-      } else if (selectedRegion === "Palamunai") {
-        deliveryFee = Number(process.env.NEXT_PUBLIC_PALAMUNAI_FEE);
-      } else if (selectedRegion === "Addalaichenai") {
-        deliveryFee = Number(process.env.NEXT_PUBLIC_ADDALAICHENAI_FEE);
-      } else if (selectedRegion === "Sagamam") {
-        deliveryFee = Number(process.env.NEXT_PUBLIC_SAGAMAM_FEE);
-      } else if (selectedRegion === "Kudiyiruppu") {
-        deliveryFee = Number(process.env.NEXT_PUBLIC_KUDIYIRUPPU_FEE);
-      } else {
-        deliveryFee = 400;
-      }
-    } else {
-      deliveryFee = 0;
+    if (deliveryOption !== "delivery") return 0;
+
+    const settingKey = regionToSettingKey[selectedRegion];
+    if (settingKey && fees[settingKey] !== undefined) {
+      return fees[settingKey];
     }
-    return deliveryFee;
+    return 400; // fallback fee if missing
   };
 
   const handleSubmit = async () => {
@@ -165,10 +191,9 @@ export const Checkout: React.FC = () => {
           setInfoMessage(data.message);
         } else {
           toast.error(data.message || "Failed to submit order.");
+          router.push(Routes.ORDER_FAILED);
         }
       }
-
-      // You can move from console.log to actual submit logic here
 
       // For now, just alert success for testing
       //  alert("Order info logged to console");
@@ -177,6 +202,10 @@ export const Checkout: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (initLoading) {
+    return renderLoader();
+  }
 
   const renderHeader = () => {
     return <components.Header title="Checkout" showGoBack={true} />;

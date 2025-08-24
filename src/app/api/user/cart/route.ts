@@ -299,3 +299,57 @@ export const PATCH = async (req: NextRequest) => {
     );
   }
 };
+
+// clear cart
+// DELETE /api/user/cart
+export const DELETE = async (req: NextRequest) => {
+  try {
+    const user = await verifyToken();
+    if (!user) {
+      return NextResponse.json(
+        { message: "Unauthorized access", success: false },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+
+    const { userId } = await req.json();
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "User ID is required", success: false },
+        { status: 400 }
+      );
+    }
+
+    if (userId.toString() !== user._id.toString()) {
+      return NextResponse.json(
+        { message: "Unauthorized access", success: false },
+        { status: 401 }
+      );
+    }
+
+    const cart = await Cart.findOne({ user: user._id });
+    if (!cart) {
+      return NextResponse.json(
+        { message: "Cart not found", success: false },
+        { status: 404 }
+      );
+    }
+
+    await Cart.findByIdAndDelete(cart._id);
+    await User.findByIdAndUpdate(user._id, { $set: { cart: null } });
+
+    return NextResponse.json(
+      { message: "Cart cleared successfully", success: true },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error(error.message);
+    return NextResponse.json(
+      { message: error.message, success: false },
+      { status: 500 }
+    );
+  }
+};

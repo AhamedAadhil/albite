@@ -34,4 +34,5 @@ export enum Routes {
   SIGN_UP_ACCOUNT_CREATED = "/sign-up-account-created",
   VERIFY_YOUR_PHONE_NUMBER = "/verify-your-phone-number",
   FORGOT_PASSWORD_SENT_EMAIL = "/forgot-password-sent-email",
+  SPECIAL_ORDER = "/special-orders",
 }

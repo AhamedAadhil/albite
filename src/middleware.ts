@@ -15,7 +15,9 @@ const PROTECTED_ROUTES = [
   "/special-orders",
   "/track-your-order",
   "/order-successful",
+  "/order-failed",
   "/reviews",
+  "/privacy-policy",
 ];
 
 const getJwtSecret = () => new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -69,6 +71,8 @@ export const config = {
     "/special-orders",
     "/track-your-order",
     "/order-successful",
+    "/order-failed",
     "/reviews",
+    "/privacy-policy",
   ],
 };

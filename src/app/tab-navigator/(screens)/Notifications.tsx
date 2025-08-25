@@ -55,8 +55,8 @@ export const Notifications: React.FC = () => {
             style={{
               padding: 40,
               textAlign: "center",
-              color: "var(--text-primary)", // Use your main text color variable or specific color
-              height: "calc(100vh - 100px)", // Adjust for header/footer if any, or use "100vh" for full screen
+              color: "#f9a826",
+              height: "calc(100vh - 100px)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -67,7 +67,11 @@ export const Notifications: React.FC = () => {
             <svg.EmptyBellSvg
               width={80}
               height={80}
-              style={{ marginBottom: 24, color: "var(--icon-color)" }} // Customize icon color if needed
+              style={{
+                marginBottom: 24,
+                color: "#f9a826",
+                borderColor: "#f9a826",
+              }}
             />
             <h3>No notifications yet</h3>
             <p>You have no new updates or alerts at this moment.</p>
@@ -76,7 +80,7 @@ export const Notifications: React.FC = () => {
               style={{
                 marginTop: 16,
                 padding: "8px 16px",
-                backgroundColor: "var(--main-turquoise)",
+                backgroundColor: "#f9a826",
                 color: "white",
                 border: "none",
                 borderRadius: 6,
@@ -85,12 +89,13 @@ export const Notifications: React.FC = () => {
                 fontSize: 14,
                 transition: "background-color 0.3s",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#005f99")
+              onMouseEnter={
+                (e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "#f9a826") /* Lighter shade */
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "var(--main-turquoise)")
+                (e.currentTarget.style.backgroundColor = "#f4b551ff")
               }
             >
               Refresh
@@ -106,12 +111,13 @@ export const Notifications: React.FC = () => {
               }}
             >
               <button
+                className="t12"
                 type="button"
                 style={{
                   marginTop: 16,
                   background: "none",
                   border: "none",
-                  color: "var(--main-turquoise)",
+                  color: "#f9a826",
                   cursor: "pointer",
                   fontWeight: 500,
                   fontSize: 14,
@@ -178,7 +184,7 @@ export const Notifications: React.FC = () => {
                           {!notification.isRead && (
                             <span
                               className="t12 clickable"
-                              style={{ color: "var(--main-turquoise)" }}
+                              style={{ color: "#f9a826" }}
                               onClick={() =>
                                 handleMarkAsRead(String(notification._id))
                               }

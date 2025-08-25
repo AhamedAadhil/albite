@@ -27,24 +27,16 @@ const Support: React.FC = () => {
         boxShadow: "0 2px 8px rgb(255 138 113 / 0.2)",
       }}
     >
-      <h3 style={{ marginBottom: 15, color: "var(--main-turquoise)" }}>
-        Contact Details
-      </h3>
+      <h3 style={{ marginBottom: 15, color: "#f9a826" }}>Contact Details</h3>
       <p>
         <strong>Phone: </strong>
-        <a
-          href={`tel:${CONTACT_INFO.phone}`}
-          style={{ color: "var(--main-turquoise)" }}
-        >
+        <a href={`tel:${CONTACT_INFO.phone}`} style={{ color: "#f9a826" }}>
           {CONTACT_INFO.phone}
         </a>
       </p>
       <p>
         <strong>Email: </strong>
-        <a
-          href={`mailto:${CONTACT_INFO.email}`}
-          style={{ color: "var(--main-turquoise)" }}
-        >
+        <a href={`mailto:${CONTACT_INFO.email}`} style={{ color: "#f9a826" }}>
           {CONTACT_INFO.email}
         </a>
       </p>
@@ -104,7 +96,7 @@ const Support: React.FC = () => {
           );
         }}
         style={{
-          backgroundColor: "var(--main-turquoise)",
+          backgroundColor: "#ED1A25",
           color: "white",
           border: "none",
           borderRadius: 10,
@@ -112,6 +104,8 @@ const Support: React.FC = () => {
           fontSize: 16,
           cursor: "pointer",
           fontWeight: "bold",
+          alignItems: "center",
+          display: "inline-flex",
         }}
       >
         Contact us on WhatsApp

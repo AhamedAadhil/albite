@@ -159,6 +159,11 @@ export const SignUp: React.FC = () => {
               // href={Routes.VERIFY_YOUR_PHONE_NUMBER}
               onClick={handleSubmit}
               disabled={!isFormValid}
+              style={{
+                backgroundColor: "#f9a826",
+                color: "white",
+                border: "#f9a826",
+              }}
             />
           </section>
 
@@ -166,10 +171,7 @@ export const SignUp: React.FC = () => {
           <section>
             <p className="t16" style={{ marginBottom: "20px" }}>
               Already have an account?{" "}
-              <Link
-                href={Routes.SIGN_IN}
-                style={{ color: "var(--main-turquoise)" }}
-              >
+              <Link href={Routes.SIGN_IN} style={{ color: "#f9a826" }}>
                 Sign in.
               </Link>
             </p>

@@ -408,8 +408,9 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
               display: "inline-block",
               marginRight: 12,
               padding: "8px 14px",
+              color: parcelType === option ? "#f9a826" : "#555",
               border:
-                parcelType === option ? "2px solid #2c3e50" : "1px solid #ccc",
+                parcelType === option ? "2px solid #f9a826" : "1px solid #555",
               backgroundColor: parcelType === option ? "#f0f4f8" : "white",
               borderRadius: 8,
               fontWeight: parcelType === option ? "700" : "500",
@@ -732,6 +733,11 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
             fontWeight: "700",
             borderRadius: 12,
           }}
+          style={{
+            backgroundColor: dish?.isActive ? "#ED1A25" : "#ccc",
+            borderColor: dish?.isActive ? "#ED1A25" : "#ccc",
+            cursor: dish?.isActive ? "pointer" : "not-allowed",
+          }}
         />
 
         {/* PREORDER MODAL */}
@@ -745,6 +751,7 @@ export const MenuItem: React.FC<Props> = ({ menuItemId }) => {
 
         <components.Button
           label="Reviews"
+          style={{ borderColor: "#f9a826", color: "#f9a826" }}
           // href="/reviews"
           onClick={() => {
             router.push("/reviews");

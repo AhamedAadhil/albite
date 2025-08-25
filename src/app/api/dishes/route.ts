@@ -32,7 +32,9 @@ export const GET = async (req: NextRequest) => {
     if (isPopular) filters.isPopular = isPopular === "true";
     if (isNewDish) filters.isNewDish = isNewDish === "true";
 
-    const dishes = await Dish.find(filters).sort({ createdAt: -1 });
+    const dishes = await Dish.find(filters)
+      .sort({ createdAt: -1 })
+      .select(" -totalOrders -addons -createdAt -updatedAt");
 
     return NextResponse.json({ dishes, success: true });
   } catch (error: any) {

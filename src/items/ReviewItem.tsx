@@ -46,7 +46,7 @@ export const ReviewItem: React.FC<Props> = ({ review, containerStyle }) => {
             width: 48,
             height: 48,
             borderRadius: "50%",
-            backgroundColor: "#0070f3",
+            backgroundColor: "#ED1A25",
             color: "white",
             fontWeight: "bold",
             fontSize: 18,

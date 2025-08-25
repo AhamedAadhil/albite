@@ -320,7 +320,7 @@ export const MenuListItem: React.FC<Props> = ({ dish, isLast }) => {
               justifyContent: "center",
               margin: 14,
               borderRadius: 12,
-              backgroundColor: "var(--main-turquoise)",
+              backgroundColor: "#f9a826",
             }}
           >
             <span className="t14" style={{ color: "var(--white-color)" }}>

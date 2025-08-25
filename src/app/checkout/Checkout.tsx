@@ -19,10 +19,10 @@ export const Checkout: React.FC = () => {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
-  let deliveryFee = 0;
 
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [pointsPerRupee, setPointsPerRupee] = React.useState<number>(0);
+
   const [loading, setLoading] = useState(false);
   const [initLoading, setInitLoading] = useState(false);
 
@@ -223,7 +223,7 @@ export const Checkout: React.FC = () => {
             padding: 20,
             borderRadius: 10,
             marginBottom: 14,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
             backgroundColor: "var(--white-color)",
           }}
         >
@@ -263,7 +263,7 @@ export const Checkout: React.FC = () => {
           style={{
             marginBottom: "14px",
             padding: 20,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
             borderRadius: 10,
             backgroundColor: "var(--white-color)",
             width: "100%", // full width of parent container
@@ -293,15 +293,12 @@ export const Checkout: React.FC = () => {
               borderRadius: 8,
               border:
                 usePoints > 0
-                  ? "2px solid var(--main-turquoise)"
+                  ? "2px solid #f9a826"
                   : "1px solid var(--border-color)",
               fontSize: "1rem",
               boxSizing: "border-box",
               fontWeight: 600,
-              color:
-                usePoints > 0
-                  ? "var(--main-turquoise)"
-                  : "var(--text-muted-color)",
+              color: usePoints > 0 ? "#f9a826" : "var(--text-muted-color)",
               transition: "border-color 0.3s ease, color 0.3s ease",
               outline: "none",
             }}
@@ -313,7 +310,7 @@ export const Checkout: React.FC = () => {
               style={{
                 marginTop: 8,
                 fontSize: "0.9rem",
-                color: "var(--main-turquoise)",
+                color: "#f9a826",
                 fontWeight: 600,
               }}
             >
@@ -338,7 +335,7 @@ export const Checkout: React.FC = () => {
             padding: 20,
             borderRadius: 10,
             marginBottom: 14,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
             backgroundColor: "var(--white-color)",
           }}
         >
@@ -469,7 +466,14 @@ export const Checkout: React.FC = () => {
           >
             <h4>Total</h4>
             {/* <h4>Rs. {total?.toFixed(2)}</h4> */}
-            <h4>Rs. {(total + deliveryFee - usePoints).toFixed(2)}</h4>
+            <h4>
+              Rs.{" "}
+              {(
+                total +
+                handleDeliveryCost(selectedRegion, deliveryOption) -
+                usePoints
+              ).toFixed(2)}
+            </h4>
           </div>
 
           {/* Points Earned */}
@@ -513,7 +517,7 @@ export const Checkout: React.FC = () => {
             padding: 20,
             borderRadius: 12,
             marginBottom: 14,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
             backgroundColor: "var(--white-color)",
             boxShadow: "0 2px 8px rgba(249, 168, 38, 0.15)",
           }}
@@ -572,7 +576,17 @@ export const Checkout: React.FC = () => {
                   >
                     Name
                   </span>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>
+                  <span
+                    style={{
+                      fontWeight: 500,
+                      fontSize: 14,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100px",
+                      display: "inline-block",
+                    }}
+                  >
                     {user.name}
                   </span>
                 </div>
@@ -607,7 +621,17 @@ export const Checkout: React.FC = () => {
                   >
                     Email
                   </span>
-                  <span style={{ fontWeight: 500, fontSize: 14 }}>
+                  <span
+                    style={{
+                      fontWeight: 500,
+                      fontSize: 14,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100px",
+                      display: "inline-block",
+                    }}
+                  >
                     {user.email}
                   </span>
                 </div>
@@ -701,7 +725,7 @@ export const Checkout: React.FC = () => {
           style={{
             padding: 20,
             borderRadius: 10,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
             backgroundColor: "var(--white-color)",
             marginBottom: 14,
           }}
@@ -749,7 +773,7 @@ export const Checkout: React.FC = () => {
               borderRadius: 10,
               marginBottom: 14,
 
-              border: "1px solid var(--main-turquoise)",
+              border: "1px solid #f9a826",
               backgroundColor: "var(--white-color)",
               // Add any other styling to make it distinct and lower on page
             }}
@@ -794,7 +818,7 @@ export const Checkout: React.FC = () => {
             borderRadius: 10,
             backgroundColor: "var(--white-color)",
             marginBottom: 14,
-            border: "1px solid var(--main-turquoise)",
+            border: "1px solid #f9a826",
           }}
         >
           <label
@@ -836,9 +860,18 @@ export const Checkout: React.FC = () => {
     return (
       <section style={{ padding: 20 }}>
         <components.Button
-          label={loading ? "Confirming..." : "Confirm order"}
+          label={
+            loading
+              ? "Confirming..."
+              : `Confirm order (Rs. ${(
+                  total +
+                  handleDeliveryCost(selectedRegion, deliveryOption) -
+                  usePoints
+                ).toFixed(2)})`
+          }
           disabled={loading}
           onClick={handleSubmit}
+          style={{ backgroundColor: "#ed1a25", borderColor: "#ed1a25" }}
         />
         {infoMessage && (
           <InfoPopup

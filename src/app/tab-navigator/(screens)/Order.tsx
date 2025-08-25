@@ -77,7 +77,7 @@ export const Order: React.FC = () => {
             style={{
               padding: 20,
               borderRadius: 10,
-              border: "1px solid var(--main-turquoise)",
+              border: "1px solid #f9a826",
             }}
           >
             <ul>
@@ -162,7 +162,11 @@ export const Order: React.FC = () => {
 
         {/* BUTTON */}
         <section>
-          <components.Button label="Checkout" href={Routes.CHECKOUT} />
+          <components.Button
+            label="Checkout"
+            href={Routes.CHECKOUT}
+            style={{ backgroundColor: "#ed1a25", borderColor: "#ed1a25" }}
+          />
         </section>
       </main>
     );

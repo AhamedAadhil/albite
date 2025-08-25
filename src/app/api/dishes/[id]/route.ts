@@ -25,7 +25,7 @@ export const GET = async (
     const awaitedParams = await params;
     const dishId = awaitedParams.id;
     const dish = await Dish.findOne({ _id: dishId, isActive: true }).select(
-      " -totalOrders -addons"
+      " -totalOrders -addons -createdAt -updatedAt"
     );
     if (!dish) {
       return NextResponse.json(

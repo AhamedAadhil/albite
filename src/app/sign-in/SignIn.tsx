@@ -151,7 +151,7 @@ export const SignIn: React.FC = () => {
             </div>
             <span
               className="t16 main-color clickable"
-              style={{ color: "var(--main-turquoise)" }}
+              style={{ color: "#f9a826" }}
               onClick={() => router.push(Routes.FORGOT_PASSWORD)}
             >
               Lost your password?
@@ -164,6 +164,11 @@ export const SignIn: React.FC = () => {
               label={loading ? "Signing In..." : "Sign In"}
               onClick={handleSubmit}
               disabled={!isFormValid}
+              style={{
+                backgroundColor: "#f9a826",
+                color: "white",
+                border: "#f9a826",
+              }}
             />
           </section>
 
@@ -171,10 +176,7 @@ export const SignIn: React.FC = () => {
           <section>
             <span className="t16">
               No account?{" "}
-              <Link
-                href={Routes.SIGN_UP}
-                style={{ color: "var(--main-turquoise)" }}
-              >
+              <Link href={Routes.SIGN_UP} style={{ color: "#f9a826" }}>
                 Sign up.
               </Link>
             </span>

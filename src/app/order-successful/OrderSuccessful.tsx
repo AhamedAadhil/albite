@@ -59,11 +59,13 @@ export const OrderSuccessful: React.FC = () => {
       <section style={{ padding: 20 }}>
         <components.Button
           label="Back to home"
+          style={{ backgroundColor: "#ED1A25", borderColor: "#ED1A25" }}
           href={`${Routes.TAB_NAVIGATOR}`}
           containerStyle={{ marginBottom: 14 }}
         />
         <components.Button
           href={Routes.ORDER_HISTORY}
+          style={{ borderColor: "#ED1A25", color: "#ED1A25" }}
           label="View orders"
           colorScheme="secondary"
         />

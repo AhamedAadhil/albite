@@ -98,7 +98,7 @@ export const EditProfile: React.FC = () => {
                 width: 60,
                 height: 60,
                 borderRadius: "50%",
-                backgroundColor: "#0070f3",
+                backgroundColor: "#ED1A25",
                 color: "white",
                 fontWeight: "bold",
                 fontSize: 24,
@@ -114,7 +114,7 @@ export const EditProfile: React.FC = () => {
           </div>
 
           {/* User Stats */}
-          {/* User Stats */}
+
           <div
             style={{
               display: "flex",
@@ -125,7 +125,7 @@ export const EditProfile: React.FC = () => {
             }}
           >
             <div style={{ textAlign: "center", flex: 1 }}>
-              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
+              <div style={{ fontSize: 24, color: "#f9a826" }}>
                 {user?.points || 0}
               </div>
               <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
@@ -134,7 +134,7 @@ export const EditProfile: React.FC = () => {
             </div>
 
             <div style={{ textAlign: "center", flex: 1 }}>
-              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
+              <div style={{ fontSize: 24, color: "#f9a826" }}>
                 {user?.createdAt
                   ? new Date(user.createdAt).toLocaleDateString()
                   : "-"}
@@ -198,6 +198,11 @@ export const EditProfile: React.FC = () => {
           <components.Button
             label="Save changes"
             onClick={handleSave}
+            style={{
+              backgroundColor: "#ED1A25",
+              color: "white",
+              borderColor: "#ED1A25",
+            }}
             containerStyle={{ marginBottom: 20 }}
           />
         </section>

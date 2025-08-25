@@ -28,13 +28,21 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       .populate({
         path: "favourites",
         model: "Dish",
-        select: "-totalOrders -addons -createdAt -updatedAt",
+        select: "-totalOrders -addons -createdAt -updatedAt -totalOrders",
       })
       .populate({
         path: "cart",
         populate: [
-          { path: "dishes.dish", model: "Dish" },
-          { path: "addons.addon", model: "AddOn" },
+          {
+            path: "dishes.dish",
+            model: "Dish",
+            select: "-totalOrders -addons -createdAt -updatedAt -totalOrders",
+          },
+          {
+            path: "addons.addon",
+            model: "AddOn",
+            select: "-createdAt -updatedAt",
+          },
         ],
       });
 

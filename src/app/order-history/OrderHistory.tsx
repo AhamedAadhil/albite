@@ -132,18 +132,10 @@ export const OrderHistory: React.FC = () => {
   const deliveryIcon = (method: string) => {
     switch (method.toLowerCase()) {
       case "delivery":
-        return (
-          <Package
-            size={16}
-            color="var(--main-turquoise)"
-            aria-label="Delivery"
-          />
-        );
+        return <Package size={16} color="#f9a826" aria-label="Delivery" />;
       case "pickup":
       case "takeaway":
-        return (
-          <Bike size={16} color="var(--main-turquoise)" aria-label="Takeaway" />
-        );
+        return <Bike size={16} color="#f9a826" aria-label="Takeaway" />;
       default:
         return null;
     }
@@ -211,9 +203,9 @@ export const OrderHistory: React.FC = () => {
                 containerStyle={baseBtnStyle}
                 style={{
                   backgroundColor: "transparent",
-                  border: "1.5px solid var(--main-turquoise)",
+                  border: "1.5px solid #f9a826",
                   borderRadius: 8,
-                  color: "var(--main-turquoise)",
+                  color: "#f9a826",
                   padding: "10px 20px",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -282,7 +274,7 @@ export const OrderHistory: React.FC = () => {
                 boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 marginBottom: "1rem",
                 border: isOpen
-                  ? "2px solid var(--main-turquoise)"
+                  ? "2px solid #f9a826"
                   : "1px solid var(--border-color)",
                 transition: "border-color 0.3s ease",
                 fontSize: "1rem",
@@ -340,7 +332,7 @@ export const OrderHistory: React.FC = () => {
                         display: "flex",
                         alignItems: "center",
                         gap: 6,
-                        color: "var(--main-turquoise)",
+                        color: "#f9a826",
                         fontWeight: 500,
                         fontSize: "0.875rem",
                         textTransform: "capitalize",
@@ -437,9 +429,9 @@ export const OrderHistory: React.FC = () => {
                         marginBottom: "1rem",
                         padding: "1rem 1.25rem",
                         backgroundColor: "var(--main-turquoise-light)", // soft turquoise background
-                        border: "1.5px solid var(--main-turquoise)", // border matching main turquoise color
+                        border: "1.5px solid #f9a826", // border matching main turquoise color
                         borderRadius: 12,
-                        color: "var(--main-turquoise)",
+                        color: "#f9a826",
 
                         lineHeight: 1.4,
                         whiteSpace: "pre-wrap",
@@ -506,7 +498,7 @@ export const OrderHistory: React.FC = () => {
                                 fontSize: "0.75rem",
                                 fontWeight: 400,
                                 marginTop: 2,
-                                color: "var(--main-turquoise)",
+                                color: "#f9a826",
                                 backgroundColor: "var(--main-turquoise-light)",
                                 padding: "2px 8px",
                                 borderRadius: 12,

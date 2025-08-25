@@ -154,7 +154,7 @@ export const Modal: React.FC = () => {
               width: 60,
               height: 60,
               borderRadius: "50%",
-              backgroundColor: "#007bff", // or your theme color like 'var(--main-turquoise)'
+              backgroundColor: "#ED1A25", // or your theme color like 'var(--main-turquoise)'
               color: "white",
               display: "flex",
               alignItems: "center",

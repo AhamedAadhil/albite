@@ -35,4 +35,6 @@ export enum Routes {
   VERIFY_YOUR_PHONE_NUMBER = "/verify-your-phone-number",
   PASSWORD_RESET_SUCCESS = "/password-reset-success",
   SPECIAL_ORDER = "/special-orders",
+  PRIVACY_POLICY = "/privacy-policy",
+  SUPPORT = "/support",
 }

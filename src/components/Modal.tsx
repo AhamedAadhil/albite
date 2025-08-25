@@ -70,7 +70,7 @@ const modalMenu = [
   {
     id: 9,
     title: "Support Center",
-    route: "",
+    route: "/support",
     switch: false,
   },
   {

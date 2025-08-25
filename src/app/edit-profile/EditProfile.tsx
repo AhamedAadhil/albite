@@ -113,22 +113,34 @@ export const EditProfile: React.FC = () => {
             </div>
           </div>
 
-          {/* User Stats -points */}
+          {/* User Stats */}
+          {/* User Stats */}
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around", // equal space around both items
               marginBottom: 30,
               fontWeight: 600,
               color: "var(--main-dark)",
             }}
           >
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", flex: 1 }}>
               <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
                 {user?.points || 0}
               </div>
               <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
                 Albite Loyalty Points
+              </div>
+            </div>
+
+            <div style={{ textAlign: "center", flex: 1 }}>
+              <div style={{ fontSize: 24, color: "var(--main-turquoise)" }}>
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : "-"}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-muted-color)" }}>
+                Member since
               </div>
             </div>
           </div>

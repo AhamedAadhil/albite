@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type User = {
+  createdAt: string | number | Date;
   _id: string;
   name: string;
   points: number;

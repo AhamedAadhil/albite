@@ -496,18 +496,26 @@ export const Home: React.FC = () => {
               </li>
               <li style={{ marginBottom: 8 }}>
                 <Link
-                  href={Routes.REVIEWS}
+                  href={Routes.FAQ}
                   style={{ color: "#eee", textDecoration: "none" }}
                 >
-                  Reviews
+                  FAQ
                 </Link>
               </li>
               <li style={{ marginBottom: 8 }}>
                 <Link
-                  href="/contact"
+                  href={Routes.PRIVACY_POLICY}
                   style={{ color: "#eee", textDecoration: "none" }}
                 >
-                  Contact
+                  Privacy Policy
+                </Link>
+              </li>
+              <li style={{ marginBottom: 8 }}>
+                <Link
+                  href={Routes.SUPPORT}
+                  style={{ color: "#eee", textDecoration: "none" }}
+                >
+                  Support Center
                 </Link>
               </li>
             </ul>

@@ -1,5 +1,15 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
+// permissions enum
+export enum Permission {
+  VIEW_ALL_ORDERS = "view_all_orders",
+  TAKEAWAYS_ONLY = "takeaways_only",
+  DELIVER_ONLY = "deliver_only",
+  UPDATE_POINTS = "update_points",
+  MODIFY_ORDER = "modify_order",
+  CREATE_DISH = "create_dish",
+}
+
 // 1. Interface
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
@@ -13,7 +23,8 @@ export interface IUser extends Document {
   otp: string;
   otpExpires?: Date;
 
-  role: number; // 0 - user, 7 - admin
+  role: number; // 0 - user, 7 - super admin, 6- admins
+  permissions: Permission[];
   totalSpent: number;
   points: number;
 
@@ -84,6 +95,12 @@ const userSchema = new Schema<IUser>(
     role: {
       type: Number,
       default: 0, // 0 = user, 7 = admin
+    },
+
+    permissions: {
+      type: [String],
+      enum: Object.values(Permission), // enforce only valid permission strings
+      default: [],
     },
 
     totalSpent: {

@@ -775,7 +775,6 @@ export const Checkout: React.FC = () => {
 
               border: "1px solid #f9a826",
               backgroundColor: "var(--white-color)",
-              // Add any other styling to make it distinct and lower on page
             }}
           >
             <label
@@ -802,11 +801,25 @@ export const Checkout: React.FC = () => {
                 fontSize: "1rem",
               }}
             >
-              {regions.map((region) => (
+              {/* {regions.map((region) => (
                 <option key={region} value={region}>
                   {region}
                 </option>
-              ))}
+              ))} */}
+
+              {regions.map((region) => {
+                const settingKey = regionToSettingKey[region];
+                const fee =
+                  settingKey && fees[settingKey] !== undefined
+                    ? fees[settingKey]
+                    : 400; // fallback fee
+
+                return (
+                  <option key={region} value={region}>
+                    {region} - Rs. {fee}
+                  </option>
+                );
+              })}
             </select>
           </section>
         )}
